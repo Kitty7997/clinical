@@ -1,0 +1,45 @@
+.reminder_heading {
+    font-size: 72px;
+    line-height: 55px;
+    color: #4b383b;
+    margin: 0;
+    font-weight: 600;
+    text-align: center;
+}
+.order_status p {
+    font-size: 18px;
+    color: #6b4f54;
+    font-weight: 600;
+    margin: 0;
+    padding-bottom: 10px;
+}
+.order_status {
+    margin-top: 40px;
+}
+.delivery_sec .order_receipt:nth-child(4) {
+    border-bottom: none;
+    padding-bottom: unset;
+}
+.delivery_sec .order_receipt:nth-child(3){
+    border-bottom: 1px solid #fff;
+    padding-bottom: 1.5rem;
+}
+.delivery_sec .order_receipt:nth-child(2){
+    border-top: 1px solid #fff;
+    padding-top: 1.5rem;
+}
+.delivery_sec .hormone_test {
+    justify-content: flex-start;
+    gap: 20px;
+    padding-bottom: 25px;
+}
+.delivery_sec .step_center {
+    width: auto;
+}
+.delivery_sec .order_total {
+    margin-top: 10px;
+    margin-bottom: 25px;
+}
+.delivery_sec .seprater_cart {
+    padding-bottom: 5px;
+}

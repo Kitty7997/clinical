@@ -1,0 +1,39 @@
+.basket_hold {
+    background: #eeee;
+    border: 2px dashed #d2d2d2;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.basket_items img {
+    width: 120px;
+}
+.basket_items {
+    text-align: center;
+}
+.basket_hold {
+    background: #eeee;
+    border: 2px dashed #d2d2d2;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px 0;
+}
+.basket_items {
+    text-align: center;
+}
+.basket_items p {
+    margin: 0;
+    margin-bottom: 20px;
+    color: #4b383b;
+    font-size: 18px;
+    line-height: 24px;
+}
+.brown_box {
+    height: 125px;
+    width: 125px;
+    background: #8B797B;
+    border-radius: 10px;
+}

@@ -1,0 +1,130 @@
+.cart_item .nurse_visit_inner {
+    align-items: center;
+}
+.cart_item{
+	position: relative;
+}
+img.cross_icon {
+    position: absolute;
+    width: 18px;
+    right: 25px;
+    top: 25px;
+    cursor: pointer;
+}
+.heading_text h2{
+    font-size: 42px;
+    line-height: 52px;
+    color: #4b383b;
+    margin-bottom: 0;
+}
+.heading_text p {
+    color: #4b383b;
+    margin-top: 5px;
+    margin-bottom: 30px;
+    font-size: 18px;
+}
+.order_total {
+    background: #4b383b;
+    padding: 32px;
+    border-radius: 8px;
+}
+.order_receipt {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    align-items: center;
+}
+.order_receipt p {
+    color: #fff;
+    margin: 0;
+    font-size: 17px;
+}
+.order_receipt:nth-child(3) {
+    border-bottom: 1px solid #fff;
+    padding-bottom: 1rem;
+}
+.order_receipt h2 {
+    font-size: 42px;
+    margin: 10px 0;
+    color: #fff;
+}
+.order_receipt span {
+    color: #fff;
+}
+.order_receipt:nth-child(4) {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+.assesment_button button{
+	background: #fa4446;
+    color: #fafafa;
+    border: none;
+    font-size: 14px;
+    border-radius: 5px;
+    height: 35px;
+    cursor: pointer;
+    padding: 0 35px;
+}
+.checkout_button button{
+	background: #4b383b !important;
+
+}
+.button-inner {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding-top: 20px;
+}
+.cart-section {
+    padding-bottom: 3rem;
+}
+.seprater_cart {
+    border-bottom: 2px solid #8B797B;
+    padding-bottom: 2rem;
+    margin-bottom: 2rem;
+}
+.best_seller h3 {
+    color: #6b4f54;
+    font-size: 24px;
+}
+
+/*empty-cart-css*/
+.basket_hold {
+    background: #eeee;
+    border: 2px dashed #d2d2d2;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.basket_items img {
+    width: 120px;
+}
+.basket_items {
+    text-align: center;
+}
+.basket_hold {
+    background: #eeee;
+    border: 2px dashed #d2d2d2;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px 0;
+}
+.basket_items {
+    text-align: center;
+}
+.basket_items p {
+    margin: 0;
+    margin-bottom: 20px;
+    color: #4b383b;
+    font-size: 18px;
+    line-height: 24px;
+}
+.brown_box {
+    height: 125px;
+    width: 125px;
+    background: #8B797B;
+    border-radius: 10px;
+}

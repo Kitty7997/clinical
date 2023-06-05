@@ -1,0 +1,63 @@
+.yourTest_sec {
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
+.your_test_inner{
+	display: flex;
+}
+.advisor_top {
+    flex: 65%;
+    max-width: 65%;
+}
+.greater_experience h3 {
+    font-size: 28px;
+    color: #6b4f54;
+    text-align: center;
+}
+.greater_experience p {
+    color: #6b4f54;
+    font-size: 16px;
+}
+.advisor_img {
+    text-align: center;
+}
+.advisor_img img {
+    width: 450px;
+}
+.advisor_bottom {
+    display: flex;
+    padding-top: 1rem;
+    flex-wrap: wrap;
+}
+.bottom-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1 1;
+}
+.icon_hold img {
+    width: 65px;
+}
+.user_name {
+    font-weight: 600;
+    margin-bottom: 0;
+}
+.user_review {
+    text-align: center;
+    background: #E5EFE2;
+    padding: 30px;
+    margin: 30px 0 20px 0;
+    border-radius: 12px;
+    color: #6b4f54;
+}
+.review_text {
+    max-width: 510px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.advisor_top .nurse_visit_inner {
+    align-items: center;
+}
+.yourTest_sec .your_test_inner {
+    gap: 30px;
+}

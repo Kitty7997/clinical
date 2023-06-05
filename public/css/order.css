@@ -1,0 +1,34 @@
+.top_heading h1 {
+    color: #4b383b;
+    font-size: 42px;
+    text-align: center;
+}
+.order_box {
+    max-width: 800px;
+    background: #fbf9f8;
+    text-align: center;
+    margin: auto;
+    padding: 30px;
+}
+h2.order_subHeading {
+    color: #4b383b;
+    margin: 14px 0;
+}
+p.order_text_bottom {
+    color: #4b383b;
+    font-size: 18px;
+    line-height: 24px;
+    margin-bottom: 0;
+}
+.get_started button{
+    color: #fafafa;
+    border: none;
+    font-size: 14px;
+    border-radius: 5px;
+    height: 40px;
+    cursor: pointer;
+    padding: 0 35px;
+}
+.get_started {
+    margin-top: 15px;
+}

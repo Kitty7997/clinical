@@ -1,0 +1,101 @@
+.container {
+    max-width: 800px;
+    margin: auto;
+    padding-left: 15px;
+    padding-right: 15px;
+    width: 100%;
+}
+.top-header h3{
+	color: #6b4f54;
+	font-size: 24px;
+}
+.clinicial-services {
+    padding-bottom: 3rem;
+}
+.nurse_visit {
+    background: #F3ECE5;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+}
+.nurse_visit_inner {
+    display: flex;
+}
+.left_img{
+	align-items: center;
+    flex: 0 0 20%;
+    max-width: 20%;
+}
+.center_text{
+    flex: 0 0 55%;
+    max-width: 55%;
+}
+.right_button {
+    flex: 0 0 25%;
+    max-width: 25%;
+    align-items: center;
+    display: flex;
+    justify-content: right;
+}
+.left_img img {
+    max-width: 195px;
+    border-radius: 10px;
+    max-height: 125px;
+}
+.center_text h3 {
+    margin: 5px 0;
+    color: #4b383b;
+    font-size: 22px;
+   /* padding-left: 10px;*/
+}
+.right_button button {
+    background-color: #6b4f54;
+    color: #fafafa;
+    border: none;
+    height: 35px;
+    width: 120px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.center_text p {
+    line-height: 20px;
+    font-size: 16px;
+    color: #4b383b;
+    margin: 8px 0;
+    /*padding-left: 10px;*/
+}
+.center_text a {
+    /*padding-left: 10px;*/
+    color: #4b383b;
+}
+.center_text h3:nth-child(1) {
+    margin-top: 0 !important;
+}
+.nutritional_support button {
+    opacity: 0.6;
+}
+..clinicial_services_bottom button {
+    background: #fa4446;
+    color: #fafafa;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 35px;
+    padding: 0 35px;
+} 
+.clinicial_services_bottom button {
+    background: #fa4446;
+    color: #fafafa;
+    border: none;
+    font-size: 14px;
+    border-radius: 5px;
+    height: 35px;
+    cursor: pointer;
+    padding: 0 35px;
+} 
+.clinicial_services_bottom{
+	text-align: center;
+	padding-top: 1.5rem;
+}

@@ -1,0 +1,93 @@
+svg.left_arrow_img {
+    border: 2px solid #b7aaad;
+    border-radius: 4px;
+    padding: 8px;
+}
+header {
+    height: auto;
+    display: flex;
+    align-items: center;
+}
+svg.right_arrow_img {
+    transform: rotate(180deg);
+}
+.wrapper {
+    max-width: 90%;
+    width: 90%;
+    margin: auto;
+}
+.common_header {
+    width: 100% !important;
+    border: none;
+    height: 260px;
+}
+.inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 2rem;
+}
+body{
+	margin: 0;
+}
+.test_inner{
+	display: flex;
+	position: relative;
+}
+.your_test {
+    margin: auto;
+    max-width: 900px;
+    padding-top: 3rem;
+}
+.test_step {
+    align-items: center;
+    display: flex;
+    flex: 1 1;
+    z-index: 1;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    text-decoration: none;
+}
+span.test_tube_hold {
+    background: #8B797B;
+    border-radius: 50%;
+    margin: auto;
+    padding: 15px;
+    display: flex;
+}
+.test_step p {
+    font-size: 18px;
+    color: #4b383b;
+}
+.test_inner:after {
+    background-color: #8B797B;
+    content: "";
+    height: 2px;
+    left: 0;
+    margin: 10px auto auto;
+    position: absolute;
+    right: 0;
+    top: 16px;
+    width: 80%;
+    z-index: -1;
+}
+.test_step.active span {
+    background-color: #4b383b !important;
+}
+.test_step.active p {
+    color: #4b383b !important;
+    font-weight: 600;
+}
+.test_step span.active {
+    background-color: #4b383b !important;
+}
+.test_step p.active {
+   color: #4b383b !important;
+}
+.test_step span:focus {
+    background-color: #4b383b !important;
+}
+.test_step p:focus {
+   color: #4b383b !important;
+}

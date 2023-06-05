@@ -1,0 +1,119 @@
+.container {
+    max-width: 800px !important;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin: auto;
+    width: 100%;
+}
+.account_sec {
+    padding-bottom: 3rem;
+}
+.account_top h2 {
+    font-size: 42px;
+    line-height: 52px;
+    color: #4b383b;
+    margin-bottom: 0;
+}
+.account_top p {
+    font-size: 16px;
+    line-height: 24px;
+    color: #4b383b;
+    margin-top: 0;
+}
+body{
+	margin: unset;
+}
+.login-here{
+	font-weight: 600;
+	font-size: 17px;
+	padding-left: 2px;
+	color: blue;
+	text-decoration: none;
+	border-bottom: 1px solid blue;
+}
+.heading_text h3{
+	font-size: 24px;
+	line-height: 32px;
+	color: #4b383b;;
+}
+.seprater {
+    border-bottom: 2px solid #8B797B;
+    padding-bottom: 1rem;
+}
+.form_label {
+    display: flex;
+    flex: 1 1;
+    flex-direction: column;
+    gap: 6px;
+    padding-bottom: 10px;
+    font-size: 16px;
+    color: #4b383b;
+    font-weight: 500;
+}
+.inner_name {
+    display: flex;
+    gap: 30px;
+}
+.form_label input {
+    height: 34px;
+    text-indent: 10px;
+}
+.account_form .heading_text h3 {
+    margin-bottom: 15px;
+}
+.password_info {
+    background: #8B797B;
+    padding: 10px;
+    position: relative;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+.password_info ul li {
+    color: #fff;
+    position: relative;
+    list-style: none;
+}
+.password_info ul li:nth-child(1) {
+    padding-bottom: 5px;
+}
+.password_info ul li:after {
+    content: "";
+    background-image: url(../images/tick_icon.svg);
+    background-repeat: no-repeat;
+    width: 20px;
+    height: 20px;
+    left: -25px;
+    position: absolute;
+    margin-top: 5px;
+    top: -1px;
+}
+.password {
+    background: url(../images/key.png) no-repeat left;
+    background-size: 15px;
+    background-position: 10px;
+    border: 1px solid;
+    text-indent: 30px !important;
+    border-radius: 2px;
+    height: 34px !important;
+}
+.checkbox_outer {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.continue_button{
+    text-align: center;
+    padding-top: 1.5rem;
+}
+.continue_button button {
+    background: #fa4446;
+    color: #fafafa;
+    border: none;
+    width: 200px;
+    font-size: 14px;
+    border-radius: 5px;
+    height: 35px;
+    cursor: pointer;
+    padding: 0 35px;
+}

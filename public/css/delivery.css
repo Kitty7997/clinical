@@ -1,0 +1,32 @@
+.delivery_sec {
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
+a.find_address {
+    font-size: 20px;
+    color: #6b4f54;
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px solid;
+    width: 155px;
+    margin-bottom: 20px;
+}
+.delivery_sec .assesment_button button {
+    height: 40px;
+    padding: 0 90px;
+    margin-top: 10px;
+}
+.delivery_sec .assesment_button {
+    text-align: center;
+    gap: 20px;
+    display: flex;
+    justify-content: center;
+}
+.new_address_text{
+    font-size: 20px;
+    color: #6b4f54;
+    font-weight: 600;
+}
+form#deliveryAddress {
+    display: none;
+}

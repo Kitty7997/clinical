@@ -1,0 +1,80 @@
+.signin_btn button {
+    color: #fff;
+    background: #000;
+    padding: 12px 60px;
+    font-size: 15px;
+    border-radius: 8px;
+    display: flex;
+    font-weight: 600;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+.google_signin button {
+    color: #6b4f54;
+    background: #fff;
+    padding: 12px 58px;
+    border: 1px solid #ddd;
+    margin-top: 10px;
+}
+.apple_icon {
+    height: 18px;
+    width: 18px;
+}
+.or_option {
+    text-align: center;
+    position: relative;
+    color: #6b4f54;
+    font-size: 20px;
+}
+.or_option:before {
+    border-top: 2px solid #333;
+    position: absolute;
+    content: "";
+}
+.or_option:after {
+    border-top: 2px solid #333;
+    position: absolute;
+    content: "";
+}
+.or_option:before {
+    top: 12px;
+    width: 380px;
+    left: 0;
+}
+.or_option:after {
+    top: 12px;
+    width: 380px;
+    right: 0;
+}
+.login-sec .password {
+    background: unset;
+    text-indent: 10px !important;
+}
+.login-sec .checkbox_hold {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+a.forgot_pwd {
+    color: #6b4f54;
+    text-decoration: none;
+    border-bottom: 1px solid;
+    width: 118px;
+    font-weight: 600;
+    padding-top: 10px;
+}
+.login-sec .assesment_button button {
+    width: 300px;
+    height: 40px;
+}
+p.enter_details {
+    color: #6b4f54;
+    margin-top: 25px;
+}
+a.signup_here {
+    color: #6b4f54;
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px solid;
+}
