@@ -18,17 +18,13 @@ class StripePaymentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function stripe()
-    {
-        $userId = Auth::user();
+    {   $userId = Auth::user();
         $total = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
-        ->where('user_id', $userId->id)
+        ->where('user_id',$userId->id)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->sum(DB::raw('clinical.price * cart.quantity'));
-
-        $itemCount = $item->where('user_id',$userId->id)->count();
-
-        $data = compact('total','itemCount');
+        $data = compact('total');
         return view('frontend/stripe')->with($data);
     }
     
@@ -37,7 +33,6 @@ class StripePaymentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
     public function stripePost(Request $request)
 {
     Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
@@ -55,13 +50,13 @@ class StripePaymentController extends Controller
         "payment_method" => $paymentMethod->id,
         // "description" => "Test payment from itsolutionstuff.com." 
     ]);
-    // dd($paymentMethod);
-    $user = Auth::user()->id;
+    // $user = Auth::user()->id;
     // dd($user);
-    // Cart::where('product_id', Auth::user()->id)->delete();
+             Cart::where('user_id', Auth::user()->id)->delete();
+    
 
-    Session::flash('success', 'Your order has been placed!');
-    return redirect('/order');
+            Session::flash('success', 'Your order has been placed!');
+            return redirect('/order');
 
     }
 }
