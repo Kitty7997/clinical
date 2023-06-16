@@ -32,6 +32,7 @@ class StripePaymentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function stripePost(Request $request)
 {
     Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
@@ -50,12 +51,11 @@ class StripePaymentController extends Controller
         // "description" => "Test payment from itsolutionstuff.com." 
     ]);
     $user = Auth::user()->id;
-    dd($user);
-    Cart::where('product_id', Auth::user()->id)->delete();
-    
+    // dd($user);
+    // Cart::where('product_id', Auth::user()->id)->delete();
 
-            Session::flash('success', 'Your order has been placed!');
-            return redirect('/');
+    Session::flash('success', 'Your order has been placed!');
+    return redirect('/');
 
     }
 }
