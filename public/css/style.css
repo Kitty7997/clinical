@@ -25,7 +25,146 @@
 body{
 	margin: 0;
 }
+.cart_style{
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: #fa4446;
+    position: absolute;
+    right: 3.5rem;
+    display: grid;
+    font-size: 12px;
+    place-items: center;
+    top: 2rem;
+}
 
+.price_dispaly{
+    display: flex;
+    justify-content: space-between;
+}
+
+.price_dispaly h5{
+    color: #fff;
+    padding: 0;
+    margin: 5px;
+}
+
+.text-danger{
+    color: #e33;
+    margin-top: 2rem;
+}
+
+.my-btn{
+    display: flex;
+}
+
+.right_button_edit{
+    margin: 0 1rem;
+}
+
+.forgot_box{
+    width: 70%;
+    margin: auto;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    margin-top: 3rem;
+    text-align: center;
+    padding-bottom: 3rem;
+}
+
+.forgot_box h1{
+    margin-bottom: 0;
+    padding-top: 1rem;
+}
+
+.forgot_box p{
+    margin-top: 10px;
+}
+
+.forgot_input{
+    width: 90%;
+    border: solid 2px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.forgot_input::placeholder{
+    font-size: 14px;
+    font-style: italic;
+}
+
+.text-decorate{
+    text-decoration: none;
+}
+
+.mt-5{
+    margin: 1rem 0;
+}
+
+.my_label{
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.alert {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    width: 40%;
+    margin: 1rem auto;
+    border-radius: 2px;
+}
+
+.alert ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.alert li {
+    margin-bottom: 5px;
+}
+
+
+.reset_button{
+    background-color: #fa4446;
+    color: #fff;
+    padding: 7px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    border: 0;
+    position: relative;
+    top: 20px;
+    cursor: pointer;
+}
+
+.mt-0{
+    margin-top: 0 !important;
+}
+
+.my_continue_btn{
+    display: none;
+}
+
+.detail_step:hover .my_continue_btn{
+    display: block;
+}
+
+.text-success{
+    color: green;
+}
+
+.text-decorate{
+    text-decoration: none;
+}
+
+.alert-success{
+    background-color: rgb(14, 206, 14);
+    width: 30%;
+    text-align: center;
+    color: #fff;
+    font-size: 2rem;
+    margin: auto;
+}
 
 /*new header css*/
 .new_header {
@@ -92,7 +231,7 @@ body{
     padding: 15px 0;
     text-decoration: none;
     display: block;
-    border-bottom: 1px solid #c4b0a3;
+    /* border-bottom: 1px solid #c4b0a3; */
 }
 .header_nav .dropdown-content a:nth-child(3) {
     border-bottom: none;

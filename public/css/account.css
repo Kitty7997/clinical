@@ -117,3 +117,8 @@ body{
     cursor: pointer;
     padding: 0 35px;
 }
+
+.text-danger{
+    color: #e33;
+    margin-top: 2rem;
+}

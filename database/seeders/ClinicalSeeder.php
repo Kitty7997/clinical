@@ -18,19 +18,19 @@ class ClinicalSeeder extends Seeder
             [
                 'image' => '../images/health-care-station.jpg',
                 'head' => 'Nurse home visit',
-                'price' => '£79.00',
+                'price' => '79.00',
                 'para' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s',
             ],
             [
                 'image' => '../images/health-care-station.jpg',
                 'head' => 'Fertility Counselling',
-                'price' => '£85.00',
+                'price' => '85.00',
                 'para' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s',
             ],
             [
                 'image' => '../images/health-care-station.jpg',
                 'head' => 'Nutritional Support',
-                'price' => '£99.00',
+                'price' => '99.00',
                 'para' => 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s',
             ]
         ]);

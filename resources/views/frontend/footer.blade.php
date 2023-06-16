@@ -1,6 +1,6 @@
 <script type="text/javascript">
   $(document).ready(function () {
-      $('.test_step')
+      $('a.test_step')
               .click(function (e) {
           $('a.test_step')
               .removeClass("active");
