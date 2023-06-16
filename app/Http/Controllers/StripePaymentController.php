@@ -55,7 +55,7 @@ class StripePaymentController extends Controller
     // Cart::where('product_id', Auth::user()->id)->delete();
 
     Session::flash('success', 'Your order has been placed!');
-    return redirect('/');
+    return redirect('/order');
 
     }
 }
