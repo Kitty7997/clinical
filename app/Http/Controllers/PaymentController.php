@@ -11,12 +11,14 @@ use Illuminate\Support\Facades\Auth;
 class PaymentController extends Controller
 {
     public function paymentController(){
+        $userId = Auth::user();
         $url = url('/billadd');
         $deliveryData = Delivery::all();
         $billData = Bill::all();
         $title = 'Add New Address';
         $item = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
+        ->where('user_id', $userId->id)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->get();
 
@@ -28,10 +30,13 @@ class PaymentController extends Controller
 
         $newTotal = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
+        ->where('user_id', $userId->id)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->sum(DB::raw('clinical.price * cart.quantity'));
 
-        $data = compact('item','deliveryData','newTotal','billData','url','title');
+        $itemCount = $item->where('user_id',$userId->id)->count();
+
+        $data = compact('item','deliveryData','newTotal','billData','url','title','itemCount');
         return view('frontend/payment')->with($data);
         }
 
@@ -54,6 +59,7 @@ class PaymentController extends Controller
     }
 
     public function paymentEditController($id){
+        $userId = Auth::user();
         $user = Auth::user()->id;
         $deliveryData = Delivery::all();
         $billData = Bill::all();
@@ -63,6 +69,7 @@ class PaymentController extends Controller
         $url = url('/editbilladd'.'/'.$id);
         $item = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
+        ->where('user_id', $userId->id)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->get();
 
@@ -75,10 +82,13 @@ class PaymentController extends Controller
 
         $newTotal = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
+        ->where('user_id', $userId->id)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->sum(DB::raw('clinical.price * cart.quantity'));
 
-        $data = compact('item','deliveryData','newTotal','billDataNew','url','billData','title');
+        $itemCount = $item->where('user_id',$userId->id)->count();
+
+        $data = compact('item','deliveryData','newTotal','billDataNew','url','billData','title','itemCount');
         return view('frontend/payment')->with($data);
     }
 

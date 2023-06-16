@@ -19,11 +19,16 @@ class StripePaymentController extends Controller
      */
     public function stripe()
     {
+        $userId = Auth::user();
         $total = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
+        ->where('user_id', $userId->id)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->sum(DB::raw('clinical.price * cart.quantity'));
-        $data = compact('total');
+
+        $itemCount = $item->where('user_id',$userId->id)->count();
+
+        $data = compact('total','itemCount');
         return view('frontend/stripe')->with($data);
     }
     
@@ -50,6 +55,7 @@ class StripePaymentController extends Controller
         "payment_method" => $paymentMethod->id,
         // "description" => "Test payment from itsolutionstuff.com." 
     ]);
+    // dd($paymentMethod);
     $user = Auth::user()->id;
     // dd($user);
     // Cart::where('product_id', Auth::user()->id)->delete();

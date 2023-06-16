@@ -9,11 +9,11 @@
     <link rel="stylesheet" type="text/css" href="../css/payment.css">
     <link rel="stylesheet" type="text/css" href="../css/cart.css">
     <link rel="stylesheet" type="text/css" href="../css/header.css">
-	<link rel="stylesheet" type="text/css" href="../css/login.css">
-	<link rel="stylesheet" type="text/css" href="../css/account.css">
+    <link rel="stylesheet" type="text/css" href="../css/login.css">
+    <link rel="stylesheet" type="text/css" href="../css/account.css">
     <link rel="stylesheet" type="text/css" href="../css/style.css">
     <link rel="stylesheet" type="text/css" href="../css/test.css">
-	<link rel="stylesheet" type="text/css" href="../css/delivery.css">
+    <link rel="stylesheet" type="text/css" href="../css/delivery.css">
     <link rel="stylesheet" type="text/css" href="../css/order.css">
     {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
     <title>Your Test</title>
@@ -29,20 +29,20 @@
                 </div>
             </a>
             <div class="header_nav">
-               @if (Session::has('userData'))
-               @else
-               <div class="nav_item_new">
-                <a href="#">Test</a>
-            </div>
-            <div class="nav_item_new">
-                <a href="{{url('/login')}}">Login</a>
-            </div>
-            <div class="nav_item_new">
-                <a href="{{'/register'}}">Sign up</a>
-            </div>
-               @endif
-                
-                
+                @if (Session::has('userData'))
+                @else
+                    <div class="nav_item_new">
+                        <a href="#">Test</a>
+                    </div>
+                    <div class="nav_item_new">
+                        <a href="{{ url('/login') }}">Login</a>
+                    </div>
+                    <div class="nav_item_new">
+                        <a href="{{ '/register' }}">Sign up</a>
+                    </div>
+                @endif
+
+
                 <div class="nav_item_new dropdown">
                     <button class="dropbtn"><svg width="20" height="20" version="1.1" fill="white"
                             id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -59,11 +59,10 @@
                         </svg>Account</button>
                     <div class="dropdown-content">
                         <a href="#">Test</a>
-                        <a href="{{url('/order')}}">Order</a>
+                        <a href="{{ url('/order') }}">Order</a>
                         @if (Session::has('userData'))
-                        <a href="{{url('/logout')}}">Logout</a>
+                            <a href="{{ url('/logout') }}">Logout</a>
                         @else
-                            
                         @endif
                     </div>
                 </div>
@@ -74,10 +73,12 @@
                                 d="M20 6.01752H15.0865V4.06267C15.0923 3.53123 14.991 3.00392 14.7882 2.51128C14.5855 2.01863 14.2855 1.57043 13.9056 1.1926C13.5256 0.814769 13.0733 0.514821 12.5747 0.310113C12.0761 0.105404 11.5412 0 11.0009 0C10.4607 0 9.9258 0.105404 9.42722 0.310113C8.92864 0.514821 8.47629 0.814769 8.09633 1.1926C7.71637 1.57043 7.41636 2.01863 7.21365 2.51128C7.01094 3.00392 6.90957 3.53123 6.91539 4.06267V6.01752H2V22H20V6.01752ZM7.97799 4.06267C7.97298 3.66901 8.04746 3.27829 8.19713 2.91317C8.3468 2.54804 8.56867 2.21579 8.84988 1.93567C9.13108 1.65555 9.46603 1.43314 9.83528 1.28134C10.2045 1.12954 10.6008 1.05138 11.0009 1.05138C11.4011 1.05138 11.7974 1.12954 12.1666 1.28134C12.5359 1.43314 12.8708 1.65555 13.152 1.93567C13.4332 2.21579 13.6551 2.54804 13.8048 2.91317C13.9544 3.27829 14.0289 3.66901 14.0239 4.06267V6.01752H7.97799V4.06267ZM15.0865 7.06237H18.9369V20.9551H3.0626V7.06237H15.0865Z">
                             </path>
                         </svg>
-                        @if ($item->isEmpty())
-                        @else
-                            <span class="cart_style">{{ count($item) }}</span>
+                        @if (Session::has('userData'))
+                            @if ($itemCount > 0)
+                                <span class="cart_style">{{ $itemCount }}</span>
+                            @endif
                         @endif
+
                     </a>
                 </div>
             </div>
@@ -107,11 +108,11 @@
                         <p>Your test</p>
                     </a>
 
-                    <a href="{{url('/addons')}}" class="test_step">
-                        <span class="test_tube_hold"><svg height="25" width="25" version="1.1" id="Icons"
-                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                x="0px" y="0px" viewBox="0 0 32 32"
-                                style="enable-background:new 0 0 32 32;" xml:space="preserve">
+                    <a href="{{ url('/addons') }}" class="test_step">
+                        <span class="test_tube_hold"><svg height="25" width="25" version="1.1"
+                                id="Icons" xmlns="http://www.w3.org/2000/svg"
+                                xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve">
                                 <style type="text/css">
                                     .st0 {
                                         fill: none;
@@ -167,10 +168,9 @@
                         <p>Cart</p>
                     </a>
 
-                        @if (Session::has('userData'))
-                            
-                        @else
-                        <a href="{{url('/register')}}" class="test_step">
+                    @if (Session::has('userData'))
+                    @else
+                        <a href="{{ url('/register') }}" class="test_step">
                             <span class="test_tube_hold"><svg height="25" width="25" fill="#fff"
                                     version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -188,9 +188,9 @@
                                 </svg></span>
                             <p>Account</p>
                         </a>
-                        @endif
-                    
-                    <a href="{{url('/delivery')}}" class="test_step">
+                    @endif
+
+                    <a href="{{ url('/delivery') }}" class="test_step">
                         <span class="test_tube_hold"><svg height="25" width="25" fill="#fff"
                                 viewBox="0 0 200 200" data-name="Layer 1" id="Layer_1"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -201,7 +201,7 @@
                         <p>Delivery</p>
                     </a>
 
-                    <a href="{{url('/payment')}}" class="test_step">
+                    <a href="{{ url('/payment') }}" class="test_step">
                         <span class="test_tube_hold"><svg height="25" width="25" fill="#fff"
                                 viewBox="0 0 25 25" version="1.1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink">

@@ -19,11 +19,14 @@ class RegisterController extends Controller
 {
     
     public function accountPage(){
+        $userId = Auth::user();
         $item = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
+        ->where('user_id', $userId->id)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->get();
-        $data = compact('item');
+        $itemCount = $item->where('user_id',$userId->id)->count();
+        $data = compact('item','itemCount');
         return view('frontend/account')->with($data);
     }
 
@@ -51,12 +54,14 @@ class RegisterController extends Controller
     }
 
     public function loginPage(){
+        $userId = Auth::user();
         $item = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
+        ->where('user_id', $userId->id)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->get();
-        
-        $data = compact('item');
+        $itemCount = $item->where('user_id',$userId->id)->count();
+        $data = compact('item','itemCount');
         return view('frontend/login')->with($data);
     }
 
@@ -81,12 +86,16 @@ class RegisterController extends Controller
     }
     
     public function forgotPassword(){
+        $userId = Auth::user();
         $item = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
+        ->where('user_id', $userId->id)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->get();
         
-        $data = compact('item');
+        $itemCount = $item->where('user_id',$userId->id)->count();
+
+        $data = compact('item','itemCount');
         return view('frontend/forgot')->with($data);
     }
 

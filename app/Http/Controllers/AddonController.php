@@ -12,8 +12,10 @@ class AddonController extends Controller
 {
     public function addOn(){
         $clinicaldata = Clinical::all();
+        $userId = Auth::user();
         $item = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
+        ->where('user_id', $userId->id)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->get();
 
@@ -25,10 +27,11 @@ class AddonController extends Controller
 
         $newTotal = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
+        ->where('user_id', $userId->id)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->sum(DB::raw('clinical.price * cart.quantity'));
-        
-        $data = compact('item','clinicaldata','newTotal');
+        $itemCount = $item->where('user_id',$userId->id)->count();
+        $data = compact('item','clinicaldata','newTotal','itemCount');
         return view('frontend/addons')->with($data);
     }
 }

@@ -12,10 +12,12 @@ class DeliveryController extends Controller
 {
     public function dealControl(){
         $deliveryData = Delivery::all();
+        $userId = Auth::user();
         // dd($deliveryData);
         $url = url('/postdelivery');
         $item = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
+        ->where('user_id', $userId->id)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->get();
 
@@ -27,10 +29,13 @@ class DeliveryController extends Controller
 
         $newTotal = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
+        ->where('user_id', $userId->id)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->sum(DB::raw('clinical.price * cart.quantity'));
        
-        $data = compact('item','newTotal','deliveryData','url');
+        $itemCount = $item->where('user_id',$userId->id)->count();
+
+        $data = compact('item','newTotal','deliveryData','url','itemCount');
         return view('frontend/delivery')->with($data);
     }
 
@@ -67,10 +72,12 @@ class DeliveryController extends Controller
     public function editData($id){
        $deliveryData = Delivery::all();
        $editData = Delivery::find($id);
+       $userId = Auth::user();
        
        $url = url('/update').'/'. $id;
        $item = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
+        ->where('user_id', $userId->id)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->get();
 
@@ -80,10 +87,13 @@ class DeliveryController extends Controller
 
         $newTotal = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
+        ->where('user_id', $userId->id)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->sum(DB::raw('clinical.price * cart.quantity'));
 
-       $data = compact('url','item','newTotal','editData','deliveryData');
+        $itemCount = $item->where('user_id',$userId->id)->count();
+
+       $data = compact('url','item','newTotal','editData','deliveryData','itemCount');
        return view('frontend/delivery')->with($data);
     }
 

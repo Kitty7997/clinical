@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Cart;
+use App\Models\User;
 use App\Models\Clinical;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -13,22 +14,29 @@ class AddToCart extends Controller
 {
     public function addTocart(Request $request)
     {
-        $cart = Cart::where('product_id', $request->input('product_id'))->first();
+        $user = Auth::user();
+        $cart = Cart::where('product_id', $request->input('product_id'))
+        ->where('user_id', $user->id)
+        ->first();
         if ($cart) {
             $cart->increment('quantity');
         } else {
             $cart = new Cart;
             $cart->product_id = $request->input('product_id');
+            $cart->user_id = $user->id;
             $cart->save();
         }
+        // dd($cart);
         $request->session()->put('cart',$cart);
         return redirect()->back();
     }
 
     public function viewCart(Request $request){
+        $userId = Auth::user();
         $clinicaldata = Clinical::take(2)->get();
         $item = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
+        ->where('user_id', $userId->id)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->get();
         // $NewtotalPrice = 0;
@@ -47,13 +55,14 @@ class AddToCart extends Controller
 
         $newTotal = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
+        ->where('user_id', $userId->id)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->sum(DB::raw('clinical.price * cart.quantity'));
         
         $cart = $request->session()->get('item');
       
- 
-        $data = compact('item','clinicaldata','newTotal','cart');
+        $itemCount = $item->where('user_id',$userId->id)->count();
+        $data = compact('item','clinicaldata','newTotal','cart','itemCount');
 
 
         return view('frontend/cart')->with($data);

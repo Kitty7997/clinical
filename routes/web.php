@@ -28,6 +28,7 @@ use App\Http\Controllers\OrderController;
 
     // Cart routes
     Route::get('/cart',[AddToCart::class,'viewCart'])->name('cart');
+    Route::post('/add_to_cart',[AddToCart::class,'addTocart'])->name('add_to_cart');
     Route::get('/remove/{id}', [AddToCart::class, 'removeData'])->name('remove/{id}');
 
     // Delivery routes
@@ -55,7 +56,7 @@ use App\Http\Controllers\OrderController;
 });
 
 Route::get('/',[ClinicalRoute::class,'ClinicalRoute'])->name('/');
-Route::post('/add_to_cart',[AddToCart::class,'addTocart'])->name('add_to_cart');
+
 // Account routes
 Route::get('/register',[RegisterController::class,'accountPage'])->name('register');
 Route::post('/postregister',[RegisterController::class,'postLogin'])->name('postregister');
