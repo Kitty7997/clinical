@@ -16,11 +16,18 @@ class PaymentController extends Controller
         $deliveryData = Delivery::all();
         $billData = Bill::all();
         $title = 'Add New Address';
+        $item = null;
+        $itemCount = 0;
+        if($userId){
         $item = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
         ->where('user_id', $userId->id)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->get();
+        // dd($item);
+    
+      $itemCount = $item->where('user_id',$userId->id)->count();
+    }
 
         // $NewtotalPrice = 0;
         foreach($item as $key=>$value){
@@ -34,7 +41,6 @@ class PaymentController extends Controller
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->sum(DB::raw('clinical.price * cart.quantity'));
 
-        $itemCount = $item->where('user_id',$userId->id)->count();
 
         $data = compact('item','deliveryData','newTotal','billData','url','title','itemCount');
         return view('frontend/payment')->with($data);
@@ -67,11 +73,18 @@ class PaymentController extends Controller
         $billDataNew = Bill::find($id);
         // dd($billData);
         $url = url('/editbilladd'.'/'.$id);
+        $item = null;
+        $itemCount = 0;
+        if($userId){
         $item = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
         ->where('user_id', $userId->id)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->get();
+        // dd($item);
+    
+      $itemCount = $item->where('user_id',$userId->id)->count();
+    }
 
        
         // $NewtotalPrice = 0;
@@ -86,7 +99,6 @@ class PaymentController extends Controller
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->sum(DB::raw('clinical.price * cart.quantity'));
 
-        $itemCount = $item->where('user_id',$userId->id)->count();
 
         $data = compact('item','deliveryData','newTotal','billDataNew','url','billData','title','itemCount');
         return view('frontend/payment')->with($data);

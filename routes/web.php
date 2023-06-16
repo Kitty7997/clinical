@@ -51,7 +51,7 @@ use App\Http\Controllers\OrderController;
     Route::post('/stripe',[StripePaymentController::class,'stripePost']);
 
     //order routes
-    Route::get('/order',[OrderController::class,'orderNow']);
+    Route::get('/order',[OrderController::class,'orderNow'])->name('order');
 
 });
 

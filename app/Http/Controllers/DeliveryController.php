@@ -15,11 +15,18 @@ class DeliveryController extends Controller
         $userId = Auth::user();
         // dd($deliveryData);
         $url = url('/postdelivery');
-        $item = DB::table('cart')
-        ->select('cart.*','clinical.image','clinical.head','clinical.price')
-        ->where('user_id', $userId->id)
-        ->join('clinical', 'clinical.id', '=', 'cart.product_id')
-        ->get();
+        $item = null;
+        $itemCount = 0;
+        if($userId){
+          $item = DB::table('cart')
+          ->select('cart.*','clinical.image','clinical.head','clinical.price')
+          ->where('user_id', $userId->id)
+          ->join('clinical', 'clinical.id', '=', 'cart.product_id')
+          ->get();
+          // dd($item);
+        
+          $itemCount = $item->where('user_id',$userId->id)->count();
+        }
 
         // $NewtotalPrice = 0;
         foreach($item as $key=>$value){
@@ -33,7 +40,6 @@ class DeliveryController extends Controller
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->sum(DB::raw('clinical.price * cart.quantity'));
        
-        $itemCount = $item->where('user_id',$userId->id)->count();
 
         $data = compact('item','newTotal','deliveryData','url','itemCount');
         return view('frontend/delivery')->with($data);
@@ -75,11 +81,18 @@ class DeliveryController extends Controller
        $userId = Auth::user();
        
        $url = url('/update').'/'. $id;
-       $item = DB::table('cart')
+       $item = null;
+        $itemCount = 0;
+        if($userId){
+        $item = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
         ->where('user_id', $userId->id)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->get();
+        // dd($item);
+    
+      $itemCount = $item->where('user_id',$userId->id)->count();
+    }
 
         foreach($item as $key=>$value){
             $item[$key]->totalPrice=$value->price * $value->quantity;
@@ -91,7 +104,6 @@ class DeliveryController extends Controller
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->sum(DB::raw('clinical.price * cart.quantity'));
 
-        $itemCount = $item->where('user_id',$userId->id)->count();
 
        $data = compact('url','item','newTotal','editData','deliveryData','itemCount');
        return view('frontend/delivery')->with($data);

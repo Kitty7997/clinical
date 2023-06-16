@@ -15,7 +15,10 @@ class ClinicalRoute extends Controller
     $clinicaldata = Clinical::all();
     $cartData = Cart::all();
     $userId = Auth::user();
-    $item = DB::table('cart')
+    $item = null;
+    $itemCount = 0;
+    if($userId){
+      $item = DB::table('cart')
       ->select('cart.*','clinical.image','clinical.head','clinical.price')
       ->where('user_id', $userId->id)
       ->join('clinical', 'clinical.id', '=', 'cart.product_id')
@@ -23,6 +26,7 @@ class ClinicalRoute extends Controller
       // dd($item);
     
       $itemCount = $item->where('user_id',$userId->id)->count();
+    }
     
     // dd($itemCount);
     $cart = $request->session()->get('item');

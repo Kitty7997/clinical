@@ -34,11 +34,18 @@ class AddToCart extends Controller
     public function viewCart(Request $request){
         $userId = Auth::user();
         $clinicaldata = Clinical::take(2)->get();
-        $item = DB::table('cart')
-        ->select('cart.*','clinical.image','clinical.head','clinical.price')
-        ->where('user_id', $userId->id)
-        ->join('clinical', 'clinical.id', '=', 'cart.product_id')
-        ->get();
+        $item = null;
+        $itemCount = 0;
+        if($userId){
+          $item = DB::table('cart')
+          ->select('cart.*','clinical.image','clinical.head','clinical.price')
+          ->where('user_id', $userId->id)
+          ->join('clinical', 'clinical.id', '=', 'cart.product_id')
+          ->get();
+          // dd($item);
+        
+          $itemCount = $item->where('user_id',$userId->id)->count();
+        }
         // $NewtotalPrice = 0;
         foreach($item as $key=>$value){
             $item[$key]->totalPrice=$value->price * $value->quantity;
@@ -61,7 +68,6 @@ class AddToCart extends Controller
         
         $cart = $request->session()->get('item');
       
-        $itemCount = $item->where('user_id',$userId->id)->count();
         $data = compact('item','clinicaldata','newTotal','cart','itemCount');
 
 

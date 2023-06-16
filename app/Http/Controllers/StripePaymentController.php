@@ -44,19 +44,18 @@ class StripePaymentController extends Controller
         ],
     ]);
 
-    Stripe\PaymentIntent::create([
+   $a= Stripe\PaymentIntent::create([
         "amount" => 100 * 100,
         "currency" => "usd",
         "payment_method" => $paymentMethod->id,
         // "description" => "Test payment from itsolutionstuff.com." 
     ]);
-    // $user = Auth::user()->id;
-    // dd($user);
-             Cart::where('user_id', Auth::user()->id)->delete();
-    
+    dd($a);
 
-            Session::flash('success', 'Your order has been placed!');
-            return redirect('/order');
+        Cart::where('user_id', Auth::user()->id)->delete();
+    
+        Session::flash('success', 'Your order has been placed!');
+        return redirect('/order');
 
     }
 }
