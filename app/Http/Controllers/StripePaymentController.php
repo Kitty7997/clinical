@@ -89,7 +89,7 @@ class StripePaymentController extends Controller
     
                 // Create a payment intent with the provided payment method
                 $paymentIntent = PaymentIntent::create([
-                    'amount' => $newTotal, 
+                    'amount' => $newTotal * 100, 
                     'currency' => 'usd', 
                     'payment_method' => $paymentMethod->id,
                     'description' => 'Test payment',

@@ -217,7 +217,7 @@
             <div class="order_img">
                 <img src="../images/order-icon.png">
             </div>
-            <h2 class="order_subHeading">You don't buy any product</h2>
+            <h2 class="order_subHeading">You have not buy any product</h2>
             <p class="order_text_bottom">Please buy some products and enjoy the shopping journey </p>
             <a href="{{url('/')}}">
                 <div class="get_started">
