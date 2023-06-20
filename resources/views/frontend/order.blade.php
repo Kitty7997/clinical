@@ -9,7 +9,7 @@
 			<div class="top_heading">
 				<h1>Yours Orders</h1>
 			</div>
-			@if(Session::has('cartData'))
+			@if(!$item->isEmpty())
 			@foreach ($item as $data)
 			<div class="cart_item nurse_visit">
 				<div class="nurse_visit_inner">
@@ -25,7 +25,7 @@
 						src="../images/cross.svg"></a> --}}
 			</div>
 		@endforeach
-			@else
+		@else
 			<div class="order_box">
 				<div class="order_img">
 					<img src="../images/order-icon.png">

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('delivery', function (Blueprint $table) {
             $table->id();
+            $table->string('user_id');
             $table->string('fname');
             $table->string('lname');
             $table->bigInteger('phone');

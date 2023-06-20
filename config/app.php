@@ -171,7 +171,7 @@ return [
         App\Providers\FortifyServiceProvider::class,
         App\Providers\JetstreamServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
-        Srmklive\PayPal\Providers\PayPalServiceProvider::class
+        Srmklive\PayPal\Providers\PayPalServiceProvider::class,
     ])->toArray(),
 
     /*
@@ -187,7 +187,6 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
-        'PayPal' => Srmklive\PayPal\Facades\PayPal::class
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 

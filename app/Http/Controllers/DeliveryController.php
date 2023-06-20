@@ -57,7 +57,12 @@ class DeliveryController extends Controller
             'postcode' => 'required|numeric'
         ]);
 
+        $userId = Auth::user()->id;
+        // dd($item);
+    
+       
         $delivery = new Delivery;
+        $delivery->user_id = $userId;
         $delivery->fname = $request->input('fname');
         $delivery->lname = $request->input('lname');
         $delivery->phone = $request->input('phone');
@@ -110,7 +115,9 @@ class DeliveryController extends Controller
     }
 
     public function updateData($id, Request $request){
+        $userId = Auth::user()->id;
         $updateData = Delivery::find($id);
+        $delivery->user_id = $userId;
         $updateData->fname = $request->input('fname');
         $updateData->lname = $request->input('lname');
         $updateData->phone = $request->input('phone');

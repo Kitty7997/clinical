@@ -48,7 +48,8 @@ use App\Http\Controllers\OrderController;
 
     // stripe routes
     Route::get('/stripe',[StripePaymentController::class,'stripe']);
-    Route::post('/stripe',[StripePaymentController::class,'stripePost']);
+    Route::post('/stripepost',[StripePaymentController::class,'stripePost'])->name('stripe.payment');
+    Route::get('stripe-response/{id}', [StripeController::class, 'response'])->name('stripeResponse');
 
     //order routes
     Route::get('/order',[OrderController::class,'orderNow'])->name('order');

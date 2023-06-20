@@ -11,13 +11,16 @@ use App\Models\Cart;
 class OrderController extends Controller
 {
     public function orderNow(){
-        $order = new Order;
         $userId = Auth::user();
-        $cartValue = Cart::all();
-        $order->user_id = $userId->id;
-        $order->product_id = $cartValue->product_id;
-        $order->quantity = $cartValue->quantity;
+        $cartItems = Cart::where('user_id', $userId->id)->get();
+        // dd($cartItems);
 
+       foreach($cartItems as $cartItem){
+        $order = new Order;
+        $order->user_id = $userId->id;
+        $order->product_id = $cartItem->product_id;
+        $order->quantity = $cartItem->quantity;
+        }
 
         $item = null;
         $itemCount = 0;
@@ -32,7 +35,7 @@ class OrderController extends Controller
       $itemCount = $item->where('user_id',$userId->id)->count();
     }
 
-        $data = compact('item','itemCount');
+        $data = compact('item','itemCount','cartItems');
         return view('frontend/order')->with($data);
     }
 }

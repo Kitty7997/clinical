@@ -1,5 +1,5 @@
 <?php
-
+use App\Models\User;
 /*
 |--------------------------------------------------------------------------
 | Create The Application
@@ -10,6 +10,8 @@
 | the IoC container for the system binding all of the various parts.
 |
 */
+// $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+// $dotenv->load();
 
 $app = new Illuminate\Foundation\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
