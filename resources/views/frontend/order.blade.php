@@ -9,23 +9,7 @@
 			<div class="top_heading">
 				<h1>Yours Orders</h1>
 			</div>
-			@if(!$item->isEmpty())
-			@foreach ($item as $data)
-			<div class="cart_item nurse_visit">
-				<div class="nurse_visit_inner">
-					<div class="left_img">
-						<img src="{{ $data->image }}">
-					</div>
-					<div class="center_text">
-						<h3>{{ $data->head }}</h3>
-						{{-- <h3>Quantity: {{ $data->quantity }}</h3> --}}
-					</div>
-				</div>
-				{{-- <a href="{{ url('/remove') }}/{{ $data->id }}"><img class="cross_icon"
-						src="../images/cross.svg"></a> --}}
-			</div>
-		@endforeach
-		@else
+			@if($order->isEmpty())
 			<div class="order_box">
 				<div class="order_img">
 					<img src="../images/order-icon.png">
@@ -37,6 +21,35 @@
 						<button id="" class="bg_brown" type="button">Get Started</button>
 					</div></a>
 			</div>
+		
+			@else
+			<table style="width:100%">
+				<tr>
+				  <th>Image</th>
+				  <th>Heading</th>
+				  <th>Order ID</th>
+				  <th>Amount</th>
+				  <th>Quantity</th>
+				  <th>Total Price</th>
+				  <th>Status</th>
+				  <th>Payment type</th>
+				  <th>Remove</th>
+				</tr>
+				@foreach ( $order as $data)
+				<tr> 
+					<td><img src={{$data->product_image}} alt="order image"></td>
+				    <td>{{$data->product_head}}</td>
+					<td>{{$data->order_id}}</td>
+					<td>£{{$data->amount}}</td>
+					<td>{{$data->quantity}}</td>
+					<td>£{{$data->total}}</td>
+					<td>{{$data->status}}</td>
+					<td>{{$data->payment_method_type}}</td>
+					<td><a href="{{url('/orderremove')}}/{{$data->id}}"><button class="button my-remove-btn">Remove</button></a></td>
+				  </tr>
+				@endforeach
+				
+			  </table>
 			@endif
 		</div>
 	</section>

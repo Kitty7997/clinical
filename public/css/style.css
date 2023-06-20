@@ -166,6 +166,20 @@ body{
     margin: auto;
 }
 
+table, th, td {
+    border:1px solid black;
+    text-align: center;
+    border-collapse: collapse;
+  }
+
+td img{
+    width: 20%;
+  }
+
+.my-remove-btn{
+    cursor: pointer;
+}
+
 /*new header css*/
 .new_header {
     height: 100px;

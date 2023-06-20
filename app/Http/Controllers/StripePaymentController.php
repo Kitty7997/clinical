@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Models\Cart;
 use App\Models\User;
-use App\Models\Order;
+use App\Models\Orders;
 use Illuminate\Support\Facades\DB;
 use Stripe\Stripe;
 use Stripe\PaymentMethod;
@@ -60,11 +60,23 @@ class StripePaymentController extends Controller
                 ->where('user_id', $userId)
                 ->join('clinical', 'clinical.id', '=', 'cart.product_id')
                 ->sum(DB::raw('clinical.price * cart.quantity'));
-    
+
+                $item = DB::table('cart')
+                ->select('cart.*','clinical.image','clinical.head','clinical.price')
+                ->where('user_id', $userId)
+                ->join('clinical', 'clinical.id', '=', 'cart.product_id')
+                ->get();
+           
+                foreach($item as $key=>$value){
+                    $item[$key]->totalPrice=$value->price * $value->quantity;
+                    // $NewtotalPrice = $NewtotalPrice + $item[$key]->totalPrice;
+                }
+        
+               
+                
             // Retrieve the user's delivery address from the 'delivery' table
             $address = DB::table('delivery')->where('user_id', $userId)->first();
-            $customerCountry = Auth::user()->country;
-    
+            // dd($address);
             // Check if a payment method has been provided
             if ($request->has('stripeToken')) {
                 // Create a payment method using the provided stripeToken
@@ -77,13 +89,13 @@ class StripePaymentController extends Controller
     
                 // Create a payment intent with the provided payment method
                 $paymentIntent = PaymentIntent::create([
-                    'amount' => $newTotal * 100, 
+                    'amount' => $newTotal, 
                     'currency' => 'usd', 
                     'payment_method' => $paymentMethod->id,
                     'description' => 'Test payment',
                     'confirm' => true,
                 ]);
-                dd($paymentIntent);
+                // dd($paymentIntent);
                 // Handle payment intent status
                 if ($paymentIntent->status === 'requires_action' && $paymentIntent->next_action->type === 'use_stripe_sdk') {
                     // The payment requires additional authentication
@@ -91,7 +103,19 @@ class StripePaymentController extends Controller
                     // Pass the client secret to the client-side JavaScript code to complete the authentication
                     return response()->json(['requires_action' => true, 'client_secret' => $clientSecret]);
                 } elseif ($paymentIntent->status === 'succeeded') {
-                    // Payment succeeded
+                    foreach ($item as $product) {
+                        $order = new Orders;
+                        $order->user_id = $address->user_id;
+                        $order->order_id = $paymentIntent->id;
+                        $order->amount = $product->price;
+                        $order->payment_method_type = json_encode($paymentIntent->payment_method_types);
+                        $order->status = $paymentIntent->status;
+                        $order->product_image = $product->image;
+                        $order->product_head = $product->head;
+                        $order->quantity = $product->quantity;
+                        $order->total = $product->totalPrice;
+                        $order->save();
+                    }
                     Cart::where('user_id', $userId)->delete();
                     Session::flash('success', 'Your order has been placed!');
                     return redirect('/order');

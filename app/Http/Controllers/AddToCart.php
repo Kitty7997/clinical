@@ -74,7 +74,6 @@ class AddToCart extends Controller
         return view('frontend/cart')->with($data);
     }
 
-
     public function removeData($id){
         $item = Cart::destroy($id);
         return redirect()->back(); 

@@ -53,6 +53,7 @@ use App\Http\Controllers\OrderController;
 
     //order routes
     Route::get('/order',[OrderController::class,'orderNow'])->name('order');
+    Route::get('/orderremove/{id}',[OrderController::class,'removeorder']);
 
 });
 
