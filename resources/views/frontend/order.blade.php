@@ -21,7 +21,6 @@
 						<button id="" class="bg_brown" type="button">Get Started</button>
 					</div></a>
 			</div>
-		
 			@else
 			<table style="width:100%">
 				<tr>
@@ -53,6 +52,5 @@
 			@endif
 		</div>
 	</section>
-
 </body>
 </html>

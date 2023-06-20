@@ -11,20 +11,20 @@ use App\Models\Cart;
 class OrderController extends Controller
 {
     public function orderNow(){
-        $userId = Auth::user();
-       $order = Orders::all();
+       $userId = Auth::user()->id;
+       $order = Orders::where('user_id',$userId)->get();
 
         $item = null;
         $itemCount = 0;
-        if($userId){
+        
         $item = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
-        ->where('user_id', $userId->id)
+        ->where('user_id', $userId)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->get();
     
-      $itemCount = $item->where('user_id',$userId->id)->count();
-    }
+      $itemCount = $item->where('user_id',$userId)->count();
+    
 
         $data = compact('item','itemCount','order');
         return view('frontend/order')->with($data);
