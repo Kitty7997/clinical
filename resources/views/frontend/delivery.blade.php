@@ -2,6 +2,7 @@
 
 <!-- <iframe class="common_header" src="../pages/header.html"></iframe> -->
 
+
 <section class="delivery_sec">
 	<div class="container_payment">
 		<div class="payment_inner">

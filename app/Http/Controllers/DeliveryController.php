@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Auth;
 class DeliveryController extends Controller
 {
     public function dealControl(){
-        $deliveryData = Delivery::all();
-        $userId = Auth::user();
+        $userId = Auth::user()->id;
+        $deliveryData = Delivery::where('user_id', $userId)->get();
         // dd($deliveryData);
         $url = url('/postdelivery');
         $item = null;
@@ -20,12 +20,12 @@ class DeliveryController extends Controller
         if($userId){
           $item = DB::table('cart')
           ->select('cart.*','clinical.image','clinical.head','clinical.price')
-          ->where('user_id', $userId->id)
+          ->where('user_id', $userId)
           ->join('clinical', 'clinical.id', '=', 'cart.product_id')
           ->get();
           // dd($item);
         
-          $itemCount = $item->where('user_id',$userId->id)->count();
+          $itemCount = $item->where('user_id',$userId)->count();
         }
 
         // $NewtotalPrice = 0;
@@ -36,7 +36,7 @@ class DeliveryController extends Controller
 
         $newTotal = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
-        ->where('user_id', $userId->id)
+        ->where('user_id', $userId)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->sum(DB::raw('clinical.price * cart.quantity'));
        
@@ -56,24 +56,36 @@ class DeliveryController extends Controller
             'country' => 'required',
             'postcode' => 'required|numeric'
         ]);
-
-        $userId = Auth::user()->id;
-        // dd($item);
     
-       
-        $delivery = new Delivery;
-        $delivery->user_id = $userId;
-        $delivery->fname = $request->input('fname');
-        $delivery->lname = $request->input('lname');
-        $delivery->phone = $request->input('phone');
-        $delivery->street = $request->input('street');
-        $delivery->flat = $request->input('flat');
-        $delivery->city = $request->input('city');
-        $delivery->country = $request->input('country');
-        $delivery->postcode = $request->input('postcode');
-        $delivery->save();
+        $userId = Auth::user()->id;
+        $existingDelivery = Delivery::where('user_id', $userId)
+                                    ->where('street', $request->input('street'))
+                                    ->where('flat', $request->input('flat'))
+                                    ->where('city', $request->input('city'))
+                                    ->where('country', $request->input('country'))
+                                    ->where('postcode', $request->input('postcode'))
+                                    ->first();
+    
+        if ($existingDelivery) {
+            $request->session()->put('addressData', $existingDelivery);
+        } else {
+            $delivery = new Delivery;
+            $delivery->user_id = $userId;
+            $delivery->fname = $request->input('fname');
+            $delivery->lname = $request->input('lname');
+            $delivery->phone = $request->input('phone');
+            $delivery->street = $request->input('street');
+            $delivery->flat = $request->input('flat');
+            $delivery->city = $request->input('city');
+            $delivery->country = $request->input('country');
+            $delivery->postcode = $request->input('postcode');
+          
+            $delivery->save();
+        }
+
         return redirect('/payment');
     }
+    
 
     public function deleteData($id){
         $delData = Delivery::destroy($id);
@@ -130,8 +142,9 @@ class DeliveryController extends Controller
         return redirect('/delivery');
     }
 
-    public function continueData($id){
-        $continueData = Delivery::find($id);
+    public function continueData($id, Request $request){
+        $continueData = Delivery::find($id); 
+        // $request->session()->put('shipData', $continueData);
         $data = compact('continueData');
         return redirect('/payment')->with($data);
     }

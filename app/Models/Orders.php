@@ -17,6 +17,7 @@ class Orders extends Model
         'product_image',
         'product_head',
         'quantity',
-        'total'
+        'total',
+        'address'
     ];
 }

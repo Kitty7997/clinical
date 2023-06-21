@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('product_head');
             $table->integer('quantity');
             $table->bigInteger('total');
+            $table->text('address');
             $table->timestamps();
         });
     }

@@ -32,6 +32,7 @@
 				  <th>Total Price</th>
 				  <th>Status</th>
 				  <th>Payment type</th>
+				  <th>Address</th>
 				  <th>Remove</th>
 				</tr>
 				@foreach ( $order as $data)
@@ -44,6 +45,7 @@
 					<td>£{{$data->total}}</td>
 					<td>{{$data->status}}</td>
 					<td>{{$data->payment_method_type}}</td>
+					<td>Shimla</td>
 					<td><a href="{{url('/orderremove')}}/{{$data->id}}"><button class="button my-remove-btn">Remove</button></a></td>
 				  </tr>
 				@endforeach

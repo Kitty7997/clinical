@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Session;
 use App\Models\Cart;
 use App\Models\User;
 use App\Models\Orders;
+use App\Models\Bill;
+use App\Models\Delivery;
 use Illuminate\Support\Facades\DB;
 use Stripe\Stripe;
 use Stripe\PaymentMethod;
@@ -72,11 +74,12 @@ class StripePaymentController extends Controller
                     // $NewtotalPrice = $NewtotalPrice + $item[$key]->totalPrice;
                 }
         
-               
-                
+              
             // Retrieve the user's delivery address from the 'delivery' table
-            $address = DB::table('delivery')->where('user_id', $userId)->first();
-            // dd($address);
+            $address = DB::table('delivery')
+            ->where('user_id', $userId)
+            ->first();
+           
             // Check if a payment method has been provided
             if ($request->has('stripeToken')) {
                 // Create a payment method using the provided stripeToken
@@ -88,14 +91,32 @@ class StripePaymentController extends Controller
                 ]);
     
                 // Create a payment intent with the provided payment method
+                // $billData = DB::table('billing')->where('user_id',$userId)->first();
                 $paymentIntent = PaymentIntent::create([
                     'amount' => $newTotal * 100, 
                     'currency' => 'usd', 
                     'payment_method' => $paymentMethod->id,
                     'description' => 'Test payment',
                     'confirm' => true,
+                    "shipping" => [
+
+                        "name" => $address->fname,
+          
+                        "address" => [
+          
+                          "line1" => $address->phone,
+          
+                          "postal_code" => $address->postcode,
+          
+                          "city" => $address->city,
+          
+                          "state" => $address->street,
+          
+                        ],
+
+                      ]
                 ]);
-                // dd($paymentIntent);
+                //  dd($paymentIntent);
                 // Handle payment intent status
                 if ($paymentIntent->status === 'requires_action' && $paymentIntent->next_action->type === 'use_stripe_sdk') {
                     // The payment requires additional authentication
@@ -114,6 +135,7 @@ class StripePaymentController extends Controller
                         $order->product_head = $product->head;
                         $order->quantity = $product->quantity;
                         $order->total = $product->totalPrice;
+                        $order->address = $paymentIntent->shipping;
                         $order->save();
                     }
                     Cart::where('user_id', $userId)->delete();

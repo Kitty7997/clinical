@@ -57,23 +57,23 @@ use App\Http\Controllers\OrderController;
 
 });
 
-Route::get('/',[ClinicalRoute::class,'ClinicalRoute'])->name('/');
+    Route::get('/',[ClinicalRoute::class,'ClinicalRoute'])->name('/');
 
-// Account routes
-Route::get('/register',[RegisterController::class,'accountPage'])->name('register');
-Route::post('/postregister',[RegisterController::class,'postLogin'])->name('postregister');
-Route::get('/login',[RegisterController::class,'loginPage'])->name('login');
-Route::post('/postlogin',[RegisterController::class,'loginPost'])->name('postlogin');
-Route::get('/forgot-password',[RegisterController::class,'forgotPassword'])->name('forgot-password');
-Route::post('/forgot-password',[RegisterController::class,'postforgot'])->name('forgot-password');
-Route::get('/reset-password/{token}',[RegisterController::class,'resetPassword'])->name('reset');
-Route::get('/logout',[RegisterController::class,'logout'])->name('logout');
+    // Account routes
+    Route::get('/register',[RegisterController::class,'accountPage'])->name('register');
+    Route::post('/postregister',[RegisterController::class,'postLogin'])->name('postregister');
+    Route::get('/login',[RegisterController::class,'loginPage'])->name('login');
+    Route::post('/postlogin',[RegisterController::class,'loginPost'])->name('postlogin');
+    Route::get('/forgot-password',[RegisterController::class,'forgotPassword'])->name('forgot-password');
+    Route::post('/forgot-password',[RegisterController::class,'postforgot'])->name('forgot-password');
+    Route::get('/reset-password/{token}',[RegisterController::class,'resetPassword'])->name('reset');
+    Route::get('/logout',[RegisterController::class,'logout'])->name('logout');
 
 
 
-// Google routes
-Route::get('auth/google', [GoogleController::class, 'signInwithGoogle']);
-Route::get('callback/google', [GoogleController::class, 'callbackToGoogle']);
+    // Google routes
+    Route::get('auth/google', [GoogleController::class, 'signInwithGoogle']);
+    Route::get('callback/google', [GoogleController::class, 'callbackToGoogle']);
 
 
 

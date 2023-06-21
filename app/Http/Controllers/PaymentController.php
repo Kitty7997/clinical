@@ -10,10 +10,11 @@ use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
-    public function paymentController(){
-        $userId = Auth::user();
+    public function paymentController(Request $request){
+        $userId = Auth::user()->id;
         $url = url('/billadd');
-        $deliveryData = Delivery::all();
+        $deliveryData = Delivery::where('user_id', $userId)->get();
+        // dd($deliveryData);
         $billData = Bill::all();
         $title = 'Add New Address';
         $item = null;
@@ -21,13 +22,13 @@ class PaymentController extends Controller
         if($userId){
         $item = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
-        ->where('user_id', $userId->id)
+        ->where('user_id', $userId)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->get();
         // dd($item);
     
-      $itemCount = $item->where('user_id',$userId->id)->count();
-    }
+       $itemCount = $item->where('user_id',$userId)->count();
+        }
 
         // $NewtotalPrice = 0;
         foreach($item as $key=>$value){
@@ -37,13 +38,15 @@ class PaymentController extends Controller
 
         $newTotal = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
-        ->where('user_id', $userId->id)
+        ->where('user_id', $userId)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->sum(DB::raw('clinical.price * cart.quantity'));
 
 
         $data = compact('item','deliveryData','newTotal','billData','url','title','itemCount');
-        return view('frontend/payment')->with($data);
+        
+            return view('frontend/payment')->with($data);
+       
         }
 
     public function billAdd(Request $request){
@@ -53,8 +56,9 @@ class PaymentController extends Controller
             'number' => 'required|numeric',
             'email' => 'required|email'
         ]);
-
+        $userId = Auth::user()->id;
         $bill = new Bill;
+        $bill->user_id = $userId;
         $bill->fname = $request->input('fname');
         $bill->lname = $request->input('lname');
         $bill->number = $request->input('number');
@@ -65,8 +69,7 @@ class PaymentController extends Controller
     }
 
     public function paymentEditController($id){
-        $userId = Auth::user();
-        $user = Auth::user()->id;
+        $userId = Auth::user()->id;
         $deliveryData = Delivery::all();
         $billData = Bill::all();
         $title = 'Update account here';
@@ -78,12 +81,12 @@ class PaymentController extends Controller
         if($userId){
         $item = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
-        ->where('user_id', $userId->id)
+        ->where('user_id', $userId)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->get();
         // dd($item);
     
-      $itemCount = $item->where('user_id',$userId->id)->count();
+      $itemCount = $item->where('user_id',$userId)->count();
     }
 
        
@@ -95,7 +98,7 @@ class PaymentController extends Controller
 
         $newTotal = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
-        ->where('user_id', $userId->id)
+        ->where('user_id', $userId)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->sum(DB::raw('clinical.price * cart.quantity'));
 

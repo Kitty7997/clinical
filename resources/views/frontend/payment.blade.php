@@ -3,6 +3,17 @@
 
 <!-- <iframe class="common_header" src="../pages/header.html"></iframe> -->
 
+@if($errors->any())
+    <div class="alert">
+        <ul>
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+
 <section class="payment_sec">
     <div class="container_payment">
         <div class="payment_inner">
@@ -123,7 +134,21 @@
                 </form>
             </div>
 
-            <div class="seprater_cart"></div>
+            @if($deliveryData->isEmpty())
+            <div class="order_box mt-5">
+                <div class="order_img">
+                    <img src="../images/order-icon.png">
+                </div>
+                <h2 class="order_subHeading">Please enter delivery address first to continue</h2>
+                <p class="order_text_bottom">Enjoy the shopping journey with us!</p>
+                <a href="{{url('/delivery')}}">
+                    <div class="get_started">
+                        <button id="" class="bg_brown" type="button">Enter Delivery Address</button>
+                    </div></a>
+            </div>
+           
+          @else
+          <div class="seprater_cart"></div>
             <div class="main_heading">
                 <p>Payment method</p>
             </div>
@@ -181,6 +206,7 @@
                 <button id="Zip" class="gpay-btn bg_brown" type="button">Proceed with Zip</button>
             </div>
 
+         
           <a href="{{url('/stripe')}}" class="text-decorate">
             <div id="payment5" class="payment_options">
                 <div id="creditPay" class="options_step">
@@ -194,6 +220,8 @@
                 </div>
             </div>
           </a>
+          @endif
+          
 
             {{-- <form id="crediCard" class="crediCard_form">
                 <label class="form_label" for="number">Card Number
@@ -257,7 +285,7 @@
                         </div>
                         <div class="order_receipt">
                             <div class="code_input">
-                                <input type="number" id="quantity" name="quantity">
+                                <input type="number" id="quantity" name="discount_code">
                                 <p>HERTILITYHEALTH</p>
                             </div>
                             <div class="code_button">
