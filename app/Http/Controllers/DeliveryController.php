@@ -12,7 +12,7 @@ class DeliveryController extends Controller
 {
     public function dealControl(){
         $userId = Auth::user()->id;
-        $deliveryData = Delivery::where('user_id', $userId)->get();
+        $deliveryData = Delivery::where('user_id', $userId)->orderBy('created_at','desc')->first();
         // dd($deliveryData);
         $url = url('/postdelivery');
         $item = null;
@@ -58,20 +58,7 @@ class DeliveryController extends Controller
         ]);
     
         $userId = Auth::user()->id;
-        $existingDelivery = Delivery::where('user_id', $userId)
-                                    ->where('fname', $request->input('fname'))
-                                    ->where('lname', $request->input('lname'))
-                                    ->where('phone', $request->input('phone'))
-                                    ->where('street', $request->input('street'))
-                                    ->where('flat', $request->input('flat'))
-                                    ->where('city', $request->input('city'))
-                                    ->where('country', $request->input('country'))
-                                    ->where('postcode', $request->input('postcode'))
-                                    ->first();
-    
-        if ($existingDelivery) {
-            $request->session()->put('addressData', $existingDelivery);
-        } else {
+        
             $delivery = new Delivery;
             $delivery->user_id = $userId;
             $delivery->fname = $request->input('fname');
@@ -85,7 +72,7 @@ class DeliveryController extends Controller
           
             $delivery->save();
             $request->session()->put('addressData', $delivery);
-        }
+        
 
         return redirect('/payment');
     }
@@ -98,7 +85,7 @@ class DeliveryController extends Controller
 
     public function editData($id){
         $userId = Auth::user()->id;
-       $deliveryData = Delivery::where('user_id', $userId)->get();
+       $deliveryData = Delivery::where('user_id', $userId)->orderBy('created_at','desc')->first();
        $editData = Delivery::find($id);
        
        $url = url('/update').'/'. $id;

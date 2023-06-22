@@ -10,6 +10,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\StripePaymentController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\CouponController;
 
 
 /*
@@ -54,6 +55,9 @@ use App\Http\Controllers\OrderController;
     //order routes
     Route::get('/order',[OrderController::class,'orderNow'])->name('order');
     Route::get('/orderremove/{id}',[OrderController::class,'removeorder']);
+
+    // coupon routes
+    Route::post('/coupon',[CouponController::class,'couponApply']);
 
 });
 

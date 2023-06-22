@@ -19,7 +19,8 @@
         <div class="payment_inner">
           @if($newTotal)
           <div class="payment_details">
-            @foreach ($billData as $billingData)
+                @if(!$billData)
+                @else
                 <div class="detail_step">
                     <div class="left_details">
                         <h4><svg class="green_tick" width="13" height="11" viewBox="0 0 13 11" fill="none"
@@ -27,24 +28,24 @@
                                 <path d="M11.7385 1.8468L4.60555 9.01551L1.03906 5.43116" stroke="#FBF9F8"
                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg> Account Details</h4>
-                        <p>{{ $billingData->fname }} {{ $billingData->lname }}</p>
-                        <p>{{ $billingData->number }}</p>
-                        <p>{{ $billingData->email }}</p>
+                        <p>{{ $billData->fname }} {{ $billData->lname }}</p>
+                        <p>{{ $billData->number }}</p>
+                        <p>{{ $billData->email }}</p>
                     </div>
                     <div class="my-btn">
-                        <a href="{{ url('/billedit') }}/{{ $billingData->id }}">
+                        <a href="{{ url('/billedit') }}/{{ $billData->id }}">
                             <div class="right_button_edit">
                                 <button id="editBtn" type="button">Edit</button>
                             </div>
                         </a>
-                        <a href="{{ url('/deletebill') }}/{{ $billingData->id }}">
+                        <a href="{{ url('/deletebill') }}/{{ $billData->id }}">
                             <div class="right_button_edit">
                                 <button class="button">Remove</button>
                             </div>
                         </a>
                     </div>
                 </div>
-            @endforeach
+                @endif
             {{-- @foreach ($deliveryData as $data)
                 <div class="detail_step">
                     <div class="left_details">
@@ -283,15 +284,18 @@
                             <p class="code_text">Discount code</p>
                             <p class="applied_msg">Discount applied!</p>
                         </div>
-                        <div class="order_receipt">
-                            <div class="code_input">
-                                <input type="number" id="quantity" name="discount_code">
-                                <p>HERTILITYHEALTH</p>
+                        <form action="{{url('/coupon')}}" method="post">
+                            @csrf
+                            <div class="order_receipt">
+                                <div class="code_input">
+                                    <input type="text" id="quantity" name="code">
+                                    <p>HERTILITYHEALTH</p>
+                                </div>
+                                <div class="code_button">
+                                    <input class="submit_button" value="Apply" type="submit">
+                                </div>
                             </div>
-                            <div class="code_button">
-                                <input class="submit_button" value="Apply" type="submit">
-                            </div>
-                        </div>
+                        </form>
                     </div>
 
                     <div class="receipt">

@@ -8,24 +8,25 @@
 		<div class="payment_inner">
 			<div class="payment_details">
 				
-				@foreach($deliveryData as $data)
 				
+				@if(!$deliveryData)
+				@else
 				<div class="detail_step">
 					<div class="left_details">
 						<h4><svg class="green_tick" width="13" height="11" viewBox="0 0 13 11" fill="none" xmlns="http://www.w3.org/2000/svg">
 						<path d="M11.7385 1.8468L4.60555 9.01551L1.03906 5.43116" stroke="#FBF9F8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
 						</svg> Delivery Address</h4>
-						<p>{{$data->fname}}</p>
-						<p>{{$data->phone}}</p>
-						<p>{{$data->city}}</p>
+						<p>{{$deliveryData->fname}}</p>
+						<p>{{$deliveryData->phone}}</p>
+						<p>{{$deliveryData->city}}</p>
 					</div>
 					<div class="my-btn">
-						<a href="{{url('/edit')}}/{{$data->id}}">
+						<a href="{{url('/edit')}}/{{$deliveryData->id}}">
 							<div class="right_button_edit">
 								<button id="editBtnDelivery" class="button">Edit</button>
 							</div>
 						</a>
-						<a href="{{url('/delete')}}/{{$data->id}}">
+						<a href="{{url('/delete')}}/{{$deliveryData->id}}">
 							<div class="right_button_edit">
 								<button class="button">Remove</button>
 							</div>
@@ -37,14 +38,14 @@
 								<p class="new_address_text">Add new address</p>
 								<div class="inner_name">
 								  <label class="form_label" for="fname">First name *
-								  <input type="text" id="fname" name="fname" value="{{$data->fname}}"></label>
+								  <input type="text" id="fname" name="fname" value="{{$deliveryData->fname}}"></label>
 								  <span class="text-danger">
 									@error('fname')
 										{{$message}}
 									@enderror
 								  </span>
 								  <label class="form_label" for="lname">Last name *
-								  <input type="text" id="lname" name="lname" value="{{$data->lname}}"></label>
+								  <input type="text" id="lname" name="lname" value="{{$deliveryData->lname}}"></label>
 								  <span class="text-danger">
 									@error('lname')
 										{{$message}}
@@ -53,14 +54,14 @@
 								</div>
 								<div class="inner_name">
 								  <label class="form_label" for="number">Mobile number *
-								  <input type="number" id="number" name="phone" value="{{$data->phone}}"></label>
+								  <input type="number" id="number" name="phone" value="{{$deliveryData->phone}}"></label>
 								  <span class="text-danger">
 									@error('phone')
 										{{$message}}
 									@enderror
 								  </span>
 								  <label class="form_label" for="lname">Street address *
-								  <input type="text" id="address" name="street" value="{{$data->street}}"></label>
+								  <input type="text" id="address" name="street" value="{{$deliveryData->street}}"></label>
 								  <span class="text-danger">
 									@error('street')
 										{{$message}}
@@ -69,14 +70,14 @@
 								</div>
 								<div class="inner_name">
 								  <label class="form_label" for="number">Flat / Apartment No. *
-								  <input type="text" id="text" name="flat" value="{{$data->flat}}"></label>
+								  <input type="text" id="text" name="flat" value="{{$deliveryData->flat}}"></label>
 								  <span class="text-danger">
 									@error('flat')
 										{{$message}}
 									@enderror
 								  </span>
 								  <label class="form_label" for="lname">Town / City *
-								  <input type="text" id="address" name="city" value="{{$data->city}}"></label>
+								  <input type="text" id="address" name="city" value="{{$deliveryData->city}}"></label>
 								  <span class="text-danger">
 									@error('city')
 										{{$message}}
@@ -85,14 +86,14 @@
 								</div>
 								<div class="inner_name">
 								  <label class="form_label" for="lname">Country / Region *
-								  <input type="text" id="address" name="country" value="{{$data->country}}"></label>
+								  <input type="text" id="address" name="country" value="{{$deliveryData->country}}"></label>
 								  <span class="text-danger">
 									@error('country')
 										{{$message}}
 									@enderror
 								  </span>
 								  <label class="form_label" for="number">Postcode *
-								  <input type="number" id="number" name="postcode" value="{{$data->postcode}}"></label>
+								  <input type="number" id="number" name="postcode" value="{{$deliveryData->postcode}}"></label>
 								  <span class="text-danger">
 									@error('postcode')
 										{{$message}}
@@ -100,7 +101,7 @@
 								  </span>
 								</div>
 							</div>
-							<a href="{{url('/continue')}}/{{$data->id}}">
+							<a href="{{url('/continue')}}/{{$deliveryData->id}}">
 								<div class="right_button_edit my_continue_btn">
 									<button class="button">Continue with this address</button>
 								</div>
@@ -109,8 +110,7 @@
 						</div>
 					</div>
 				</div>
-				
-				@endforeach
+				@endif
 	
 
 				

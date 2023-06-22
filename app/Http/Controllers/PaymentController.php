@@ -15,7 +15,7 @@ class PaymentController extends Controller
         $url = url('/billadd');
         $deliveryData = Delivery::where('user_id', $userId)->get();
         $request->session()->put('deliverData', $deliveryData);
-        $billData = Bill::where('user_id', $userId)->get();
+        $billData = Bill::where('user_id', $userId)->orderBy('created_at','desc')->first();
         $title = 'Add New Address';
         $item = null;
         $itemCount = 0;
@@ -70,7 +70,7 @@ class PaymentController extends Controller
         $userId = Auth::user()->id;
         $deliveryData = Delivery::where('user_id',$userId)->get();
 
-        $billData = Bill::where('user_id', $userId)->get();
+        $billData = Bill::where('user_id', $userId)->orderBy('created_at','desc')-first();
         $title = 'Update account here';
         $billDataNew = Bill::find($id);
         // dd($billData);
