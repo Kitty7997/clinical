@@ -170,6 +170,7 @@ table, th, td {
     border:1px solid black;
     text-align: center;
     border-collapse: collapse;
+    margin-bottom: 3rem;
   }
 
 td img{
@@ -178,6 +179,10 @@ td img{
 
 .my-remove-btn{
     cursor: pointer;
+}
+
+.my_form_style{
+    display: none;
 }
 
 /*new header css*/

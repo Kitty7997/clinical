@@ -11,3 +11,4 @@ class Bill extends Model
     protected $table = 'billing';
     protected $privatekey = "id";
 }
+

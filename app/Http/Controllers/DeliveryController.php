@@ -59,6 +59,9 @@ class DeliveryController extends Controller
     
         $userId = Auth::user()->id;
         $existingDelivery = Delivery::where('user_id', $userId)
+                                    ->where('fname', $request->input('fname'))
+                                    ->where('lname', $request->input('lname'))
+                                    ->where('phone', $request->input('phone'))
                                     ->where('street', $request->input('street'))
                                     ->where('flat', $request->input('flat'))
                                     ->where('city', $request->input('city'))
@@ -81,6 +84,7 @@ class DeliveryController extends Controller
             $delivery->postcode = $request->input('postcode');
           
             $delivery->save();
+            $request->session()->put('addressData', $delivery);
         }
 
         return redirect('/payment');
@@ -93,9 +97,9 @@ class DeliveryController extends Controller
     }
 
     public function editData($id){
-       $deliveryData = Delivery::all();
+        $userId = Auth::user()->id;
+       $deliveryData = Delivery::where('user_id', $userId)->get();
        $editData = Delivery::find($id);
-       $userId = Auth::user();
        
        $url = url('/update').'/'. $id;
        $item = null;
@@ -103,12 +107,12 @@ class DeliveryController extends Controller
         if($userId){
         $item = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
-        ->where('user_id', $userId->id)
+        ->where('user_id', $userId)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->get();
         // dd($item);
     
-      $itemCount = $item->where('user_id',$userId->id)->count();
+      $itemCount = $item->where('user_id',$userId)->count();
     }
 
         foreach($item as $key=>$value){
@@ -117,7 +121,7 @@ class DeliveryController extends Controller
 
         $newTotal = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
-        ->where('user_id', $userId->id)
+        ->where('user_id', $userId)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->sum(DB::raw('clinical.price * cart.quantity'));
 
@@ -129,7 +133,7 @@ class DeliveryController extends Controller
     public function updateData($id, Request $request){
         $userId = Auth::user()->id;
         $updateData = Delivery::find($id);
-        $delivery->user_id = $userId;
+        $updateData->user_id = $userId;
         $updateData->fname = $request->input('fname');
         $updateData->lname = $request->input('lname');
         $updateData->phone = $request->input('phone');
@@ -144,7 +148,6 @@ class DeliveryController extends Controller
 
     public function continueData($id, Request $request){
         $continueData = Delivery::find($id); 
-        // $request->session()->put('shipData', $continueData);
         $data = compact('continueData');
         return redirect('/payment')->with($data);
     }

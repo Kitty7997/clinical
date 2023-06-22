@@ -51,80 +51,75 @@ class StripePaymentController extends Controller
     public function stripePost(Request $request)
     {
         try {
-            // Set the Stripe API key
-            Stripe::setApiKey(env('STRIPE_SECRET'));
-            // Stripe::getApiKey();
             
-            // Retrieve the authenticated user's ID
+            Stripe::setApiKey(env('STRIPE_SECRET'));
+    
+            
             $userId = Auth::user()->id;
+            $bill = Bill::where('user_id', $userId)
+            ->orderBy('created_at', 'desc')
+            ->limit(1)
+            ->first();
+            // dd($bill);
             $newTotal = DB::table('cart')
-                ->select('cart.*','clinical.image','clinical.head','clinical.price')
+                ->select('cart.*', 'clinical.image', 'clinical.head', 'clinical.price')
                 ->where('user_id', $userId)
                 ->join('clinical', 'clinical.id', '=', 'cart.product_id')
                 ->sum(DB::raw('clinical.price * cart.quantity'));
-
-                $item = DB::table('cart')
-                ->select('cart.*','clinical.image','clinical.head','clinical.price')
+    
+            $items = DB::table('cart')
+                ->select('cart.*', 'clinical.image', 'clinical.head', 'clinical.price')
                 ->where('user_id', $userId)
                 ->join('clinical', 'clinical.id', '=', 'cart.product_id')
                 ->get();
-           
-                foreach($item as $key=>$value){
-                    $item[$key]->totalPrice=$value->price * $value->quantity;
-                    // $NewtotalPrice = $NewtotalPrice + $item[$key]->totalPrice;
-                }
-        
-              
-            // Retrieve the user's delivery address from the 'delivery' table
-            $address = DB::table('delivery')
-            ->where('user_id', $userId)
-            ->first();
-           
-            // Check if a payment method has been provided
+    
+            foreach ($items as $item) {
+                $item->totalPrice = $item->price * $item->quantity;
+            }
+    
+            $address = $request->session()->get('addressData');
+            //  dd($address);
+
             if ($request->has('stripeToken')) {
-                // Create a payment method using the provided stripeToken
+                
                 $paymentMethod = PaymentMethod::create([
                     'type' => 'card',
                     'card' => [
                         'token' => $request->stripeToken,
                     ],
+                    // 'billing_details' => [
+                    //     'email' => $bill->email,
+                    //     'name' => $bill->fname,
+                    //     'phone' => $bill->number,
+                    //     ],
                 ]);
-    
-                // Create a payment intent with the provided payment method
-                // $billData = DB::table('billing')->where('user_id',$userId)->first();
+                
+                // dd($paymentMethod);
                 $paymentIntent = PaymentIntent::create([
-                    'amount' => $newTotal * 100, 
-                    'currency' => 'usd', 
+                    'amount' => $newTotal * 100,
+                    'currency' => 'usd',
                     'payment_method' => $paymentMethod->id,
                     'description' => 'Test payment',
                     'confirm' => true,
                     "shipping" => [
-
-                        "name" => $address->fname,
-          
+                        "name" => $address ->fname,
                         "address" => [
-          
-                          "line1" => $address->phone,
-          
-                          "postal_code" => $address->postcode,
-          
-                          "city" => $address->city,
-          
-                          "state" => $address->street,
-          
+                            "line1" => $address->phone,
+                            "postal_code" => $address->postcode,
+                            "city" => $address->city,
+                            "state" => $address->street,
                         ],
-
-                      ]
+                    ],
                 ]);
-                //  dd($paymentIntent);
-                // Handle payment intent status
+
+                
                 if ($paymentIntent->status === 'requires_action' && $paymentIntent->next_action->type === 'use_stripe_sdk') {
-                    // The payment requires additional authentication
+                    
                     $clientSecret = $paymentIntent->client_secret;
-                    // Pass the client secret to the client-side JavaScript code to complete the authentication
+                   
                     return response()->json(['requires_action' => true, 'client_secret' => $clientSecret]);
                 } elseif ($paymentIntent->status === 'succeeded') {
-                    foreach ($item as $product) {
+                    foreach ($items as $product) {
                         $order = new Orders;
                         $order->user_id = $address->user_id;
                         $order->order_id = $paymentIntent->id;
@@ -135,25 +130,26 @@ class StripePaymentController extends Controller
                         $order->product_head = $product->head;
                         $order->quantity = $product->quantity;
                         $order->total = $product->totalPrice;
-                        $order->address = $paymentIntent->shipping;
+                        $order->address = json_encode($paymentIntent->shipping->address->city);
                         $order->save();
                     }
+    
                     Cart::where('user_id', $userId)->delete();
                     Session::flash('success', 'Your order has been placed!');
                     return redirect('/order');
                 } else {
-                    // Handle other payment statuses or errors
+                    
                     return response()->json(['error' => 'Payment failed.']);
                 }
             } else {
-                // Handle case when no payment method is provided
                 Session::flash('error', 'No payment method provided. Your order has been cancelled.');
                 return redirect('/cart');
             }
         } catch (Exception $e) {
-            // Handle any exceptions that occurred during the payment process
+
             return response()->json(['error' => 'An error occurred during payment. Please try again.']);
         }
     }
+    
 
 }

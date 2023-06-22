@@ -52,14 +52,6 @@ class AddToCart extends Controller
             // $NewtotalPrice = $NewtotalPrice + $item[$key]->totalPrice;
         }
 
-
-        // dd($NewtotalPrice);
-        // $total = DB::table('cart')
-        // ->join('clinical', 'clinical.id','=','cart.product_id')
-        // ->sum('clinical.price');
-
-
-
         $newTotal = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
         ->where('user_id', $userId->id)

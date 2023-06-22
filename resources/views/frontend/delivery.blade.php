@@ -30,11 +30,83 @@
 								<button class="button">Remove</button>
 							</div>
 						</a>
-						<a href="{{url('/continue')}}/{{$data->id}}">
-							<div class="right_button_edit my_continue_btn">
-								<button class="button">Continue with this address</button>
+						<div class="New_address_form">
+							<form class="address_form" action="{{$url}}" method="post">
+								@csrf
+							<div class="my_form_style">
+								<p class="new_address_text">Add new address</p>
+								<div class="inner_name">
+								  <label class="form_label" for="fname">First name *
+								  <input type="text" id="fname" name="fname" value="{{$data->fname}}"></label>
+								  <span class="text-danger">
+									@error('fname')
+										{{$message}}
+									@enderror
+								  </span>
+								  <label class="form_label" for="lname">Last name *
+								  <input type="text" id="lname" name="lname" value="{{$data->lname}}"></label>
+								  <span class="text-danger">
+									@error('lname')
+										{{$message}}
+									@enderror
+								  </span>
+								</div>
+								<div class="inner_name">
+								  <label class="form_label" for="number">Mobile number *
+								  <input type="number" id="number" name="phone" value="{{$data->phone}}"></label>
+								  <span class="text-danger">
+									@error('phone')
+										{{$message}}
+									@enderror
+								  </span>
+								  <label class="form_label" for="lname">Street address *
+								  <input type="text" id="address" name="street" value="{{$data->street}}"></label>
+								  <span class="text-danger">
+									@error('street')
+										{{$message}}
+									@enderror
+								  </span>
+								</div>
+								<div class="inner_name">
+								  <label class="form_label" for="number">Flat / Apartment No. *
+								  <input type="text" id="text" name="flat" value="{{$data->flat}}"></label>
+								  <span class="text-danger">
+									@error('flat')
+										{{$message}}
+									@enderror
+								  </span>
+								  <label class="form_label" for="lname">Town / City *
+								  <input type="text" id="address" name="city" value="{{$data->city}}"></label>
+								  <span class="text-danger">
+									@error('city')
+										{{$message}}
+									@enderror
+								  </span>
+								</div>
+								<div class="inner_name">
+								  <label class="form_label" for="lname">Country / Region *
+								  <input type="text" id="address" name="country" value="{{$data->country}}"></label>
+								  <span class="text-danger">
+									@error('country')
+										{{$message}}
+									@enderror
+								  </span>
+								  <label class="form_label" for="number">Postcode *
+								  <input type="number" id="number" name="postcode" value="{{$data->postcode}}"></label>
+								  <span class="text-danger">
+									@error('postcode')
+										{{$message}}
+									@enderror
+								  </span>
+								</div>
 							</div>
-						</a>
+							<a href="{{url('/continue')}}/{{$data->id}}">
+								<div class="right_button_edit my_continue_btn">
+									<button class="button">Continue with this address</button>
+								</div>
+							</a>
+							</form>
+						</div>
 					</div>
 				</div>
 				
@@ -114,17 +186,6 @@
 						@enderror
 					  </span>
 					</div>
-					{{-- <div class="checkbox_outer">
-					    <a class="find_address" href="#">Find your address</a>
-				    <div class="checkbox_hold">
-				     <input type="checkbox" id="address1" name="address1" value="billing address">
-						<label for="address1">Also save as billing address</label>
-				    </div>
-				    <div class="checkbox_hold">
-					  <input type="checkbox" id="address2" name="address2" value="Save address">
-					    <label for="address2"> Save address for future updates</label>
-				  </div>
-				  </div> --}}
 				  <div class="assesment_button">
 					  <button class="button">Continue</button>
 				  </div>

@@ -14,8 +14,8 @@ class PaymentController extends Controller
         $userId = Auth::user()->id;
         $url = url('/billadd');
         $deliveryData = Delivery::where('user_id', $userId)->get();
-        // dd($deliveryData);
-        $billData = Bill::all();
+        $request->session()->put('deliverData', $deliveryData);
+        $billData = Bill::where('user_id', $userId)->get();
         $title = 'Add New Address';
         $item = null;
         $itemCount = 0;
@@ -28,7 +28,7 @@ class PaymentController extends Controller
         // dd($item);
     
        $itemCount = $item->where('user_id',$userId)->count();
-        }
+       }
 
         // $NewtotalPrice = 0;
         foreach($item as $key=>$value){
@@ -44,9 +44,7 @@ class PaymentController extends Controller
 
 
         $data = compact('item','deliveryData','newTotal','billData','url','title','itemCount');
-        
             return view('frontend/payment')->with($data);
-       
         }
 
     public function billAdd(Request $request){
@@ -70,8 +68,9 @@ class PaymentController extends Controller
 
     public function paymentEditController($id){
         $userId = Auth::user()->id;
-        $deliveryData = Delivery::all();
-        $billData = Bill::all();
+        $deliveryData = Delivery::where('user_id',$userId)->get();
+
+        $billData = Bill::where('user_id', $userId)->get();
         $title = 'Update account here';
         $billDataNew = Bill::find($id);
         // dd($billData);
@@ -104,7 +103,7 @@ class PaymentController extends Controller
 
 
         $data = compact('item','deliveryData','newTotal','billDataNew','url','billData','title','itemCount');
-        return view('frontend/payment')->with($data);
+        return view('frontend.payment', $data);
     }
 
     public function editbill($id, Request $request){
