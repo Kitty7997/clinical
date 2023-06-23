@@ -26,9 +26,7 @@ class StripePaymentController extends Controller
      */
     public function stripe()
     {   $userId = Auth::user();
-        $item = null;
-        $itemCount = 0;
-        if($userId){
+        
         $item = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
         ->where('user_id', $userId->id)
@@ -37,7 +35,7 @@ class StripePaymentController extends Controller
         // dd($item);
     
       $itemCount = $item->where('user_id',$userId->id)->count();
-    }
+    
         $total = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
         ->where('user_id',$userId->id)

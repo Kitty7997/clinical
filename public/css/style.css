@@ -185,6 +185,14 @@ td img{
     display: none;
 }
 
+.my_alert p{
+    color: #00B67A;
+}
+
+.my_error_alert p{
+    color: #e33;
+}
+
 /*new header css*/
 .new_header {
     height: 100px;

@@ -14,9 +14,6 @@ class OrderController extends Controller
        $userId = Auth::user()->id;
        $order = Orders::where('user_id',$userId)->get();
 
-        $item = null;
-        $itemCount = 0;
-        
         $item = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
         ->where('user_id', $userId)

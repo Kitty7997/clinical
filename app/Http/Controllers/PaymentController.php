@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Delivery;
 use Illuminate\Support\Facades\DB;
 use App\Models\Bill;
+use App\Models\Price;
+use App\Models\Coupon;
 use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
@@ -17,9 +19,7 @@ class PaymentController extends Controller
         $request->session()->put('deliverData', $deliveryData);
         $billData = Bill::where('user_id', $userId)->orderBy('created_at','desc')->first();
         $title = 'Add New Address';
-        $item = null;
-        $itemCount = 0;
-        if($userId){
+       
         $item = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
         ->where('user_id', $userId)
@@ -27,8 +27,7 @@ class PaymentController extends Controller
         ->get();
         // dd($item);
     
-       $itemCount = $item->where('user_id',$userId)->count();
-       }
+        $itemCount = $item->where('user_id',$userId)->count();
 
         // $NewtotalPrice = 0;
         foreach($item as $key=>$value){
@@ -42,8 +41,17 @@ class PaymentController extends Controller
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->sum(DB::raw('clinical.price * cart.quantity'));
 
+        $newDiscountedPrice = $request->input('discountPrice');
+        // dd($newDiscountedPrice);
+        // if ($newDiscountedPrice) {
+        //     echo "The discounted price is $newDiscountedPrice.";
+        // } else {
+        //     echo "The coupon was not applied.";
+        // }
 
-        $data = compact('item','deliveryData','newTotal','billData','url','title','itemCount');
+        
+
+        $data = compact('item','deliveryData','newTotal','billData','url','title','itemCount',);
             return view('frontend/payment')->with($data);
         }
 
@@ -69,15 +77,13 @@ class PaymentController extends Controller
     public function paymentEditController($id){
         $userId = Auth::user()->id;
         $deliveryData = Delivery::where('user_id',$userId)->get();
-
+        // $coupon = Coupon::where('user_id', $userId)->get();
         $billData = Bill::where('user_id', $userId)->orderBy('created_at','desc')-first();
         $title = 'Update account here';
         $billDataNew = Bill::find($id);
         // dd($billData);
         $url = url('/editbilladd'.'/'.$id);
-        $item = null;
-        $itemCount = 0;
-        if($userId){
+       
         $item = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
         ->where('user_id', $userId)
@@ -86,8 +92,6 @@ class PaymentController extends Controller
         // dd($item);
     
       $itemCount = $item->where('user_id',$userId)->count();
-    }
-
        
         // $NewtotalPrice = 0;
         foreach($item as $key=>$value){

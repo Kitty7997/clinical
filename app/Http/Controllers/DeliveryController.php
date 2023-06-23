@@ -15,9 +15,7 @@ class DeliveryController extends Controller
         $deliveryData = Delivery::where('user_id', $userId)->orderBy('created_at','desc')->first();
         // dd($deliveryData);
         $url = url('/postdelivery');
-        $item = null;
-        $itemCount = 0;
-        if($userId){
+        
           $item = DB::table('cart')
           ->select('cart.*','clinical.image','clinical.head','clinical.price')
           ->where('user_id', $userId)
@@ -26,7 +24,7 @@ class DeliveryController extends Controller
           // dd($item);
         
           $itemCount = $item->where('user_id',$userId)->count();
-        }
+        
 
         // $NewtotalPrice = 0;
         foreach($item as $key=>$value){
@@ -89,9 +87,7 @@ class DeliveryController extends Controller
        $editData = Delivery::find($id);
        
        $url = url('/update').'/'. $id;
-       $item = null;
-        $itemCount = 0;
-        if($userId){
+       
         $item = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
         ->where('user_id', $userId)
@@ -100,7 +96,7 @@ class DeliveryController extends Controller
         // dd($item);
     
       $itemCount = $item->where('user_id',$userId)->count();
-    }
+    
 
         foreach($item as $key=>$value){
             $item[$key]->totalPrice=$value->price * $value->quantity;
@@ -133,10 +129,10 @@ class DeliveryController extends Controller
         return redirect('/delivery');
     }
 
-    public function continueData($id, Request $request){
-        $continueData = Delivery::find($id); 
-        $data = compact('continueData');
-        return redirect('/payment')->with($data);
-    }
+    // public function continueData($id, Request $request){
+    //     $continueData = Delivery::find($id); 
+    //     $data = compact('continueData');
+    //     return redirect('/payment')->with($data);
+    // }
 
 }

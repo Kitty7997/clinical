@@ -52,6 +52,11 @@ class AddToCart extends Controller
             // $NewtotalPrice = $NewtotalPrice + $item[$key]->totalPrice;
         }
 
+
+        
+
+
+
         $newTotal = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
         ->where('user_id', $userId->id)

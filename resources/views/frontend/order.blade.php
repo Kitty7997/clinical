@@ -28,12 +28,14 @@
                 <tr>
                     <th>Image</th>
                     <th>Heading</th>
-                    <th>Order ID</th>
+                    {{-- <th>Order ID</th> --}}
                     <th>Amount</th>
                     <th>Quantity</th>
                     <th>Total Price</th>
-                    <th>Status</th>
-                    <th>Payment type</th>
+                    <th>Discount</th>
+                    <th>Paid Amount</th>
+                    {{-- <th>Status</th> --}}
+                    {{-- <th>Payment type</th> --}}
                     <th>Delivery Address</th>
                     <th>Remove</th>
                 </tr>
@@ -41,12 +43,14 @@
                     <tr>
                         <td><img src={{ $data->product_image }} alt="order image"></td>
                         <td>{{ $data->product_head }}</td>
-                        <td>{{ $data->order_id }}</td>
+                        {{-- <td>{{ $data->order_id }}</td> --}}
                         <td>£{{ $data->amount }}</td>
                         <td>{{ $data->quantity }}</td>
                         <td>£{{ $data->total }}</td>
-                        <td>{{ $data->status }}</td>
-                        <td>{{ $data->payment_method_type }}</td>
+                        <td></td>
+                        <td></td>
+                        {{-- <td>{{ $data->status }}</td> --}}
+                        {{-- <td>{{ $data->payment_method_type }}</td> --}}
                         <td>{{ $data->address}}</td>
                         <td><a href="{{ url('/orderremove') }}/{{ $data->id }}"><button
                                     class="button my-remove-btn">Remove</button></a></td>
