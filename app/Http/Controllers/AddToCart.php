@@ -6,30 +6,37 @@ use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\User;
 use App\Models\Clinical;
+use App\Models\Coupon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class AddToCart extends Controller
 {
-    public function addTocart(Request $request)
+    public function addToCart(Request $request)
     {
-        $user = Auth::user();
+        $userId = Auth::user()->id;
+        $couponData = Coupon::all();
+    
         $cart = Cart::where('product_id', $request->input('product_id'))
-        ->where('user_id', $user->id)
-        ->first();
+            ->where('user_id', $userId)
+            ->first();
+    
         if ($cart) {
             $cart->increment('quantity');
         } else {
             $cart = new Cart;
             $cart->product_id = $request->input('product_id');
-            $cart->user_id = $user->id;
+            $cart->user_id = $userId;
+            // $cart->discount = $discount;
             $cart->save();
         }
-        // dd($cart);
-        $request->session()->put('cart',$cart);
+    
+        $request->session()->put('cart', $cart);
         return redirect()->back();
     }
+    
+    
 
     public function viewCart(Request $request){
         $userId = Auth::user();
@@ -42,7 +49,10 @@ class AddToCart extends Controller
           ->where('user_id', $userId->id)
           ->join('clinical', 'clinical.id', '=', 'cart.product_id')
           ->get();
-          // dd($item);
+        //   dd($item);
+
+        $discount = $item->pluck('discount');
+        // dd($discount);
         
           $itemCount = $item->where('user_id',$userId->id)->count();
         }
@@ -52,17 +62,13 @@ class AddToCart extends Controller
             // $NewtotalPrice = $NewtotalPrice + $item[$key]->totalPrice;
         }
 
-
-        
-
-
-
         $newTotal = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
         ->where('user_id', $userId->id)
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->sum(DB::raw('clinical.price * cart.quantity'));
-        
+
+     
         $cart = $request->session()->get('item');
       
         $data = compact('item','clinicaldata','newTotal','cart','itemCount');
@@ -72,9 +78,69 @@ class AddToCart extends Controller
     }
 
     public function removeData($id){
+        $userId = Auth::user()->id;
         $item = Cart::destroy($id);
+        $existCode = Coupon::first();
+        $cart = Cart::where('user_id', $userId)
+        ->get();
+        // dd($existCode);
+        $discount = $existCode ? $existCode->discount : 0;
+
+        $newTotal = DB::table('cart')
+            ->select('cart.*', 'clinical.image', 'clinical.head', 'clinical.price')
+            ->where('user_id', $userId)
+            ->join('clinical', 'clinical.id', '=', 'cart.product_id')
+            ->sum(DB::raw('clinical.price * cart.quantity'));
+    
+            if ($existCode) {
+                if ($newTotal < 100) {
+                    // Session::flash('error', 'Discount value has been removed!');
+                    foreach ($cart as $item) {
+                        $item->discount = 0;
+                        $item->save();
+                    }
+                    Session::forget('code');
+                } 
+            }
         return redirect()->back(); 
     }
 
+    public function addToCartAgain(Request $request)
+    {
+    $userId = Auth::user()->id;
+    $couponData = Coupon::all();
+
+    $cart = Cart::where('user_id', $userId)
+        ->get();
+    
+    $existCode = Coupon::where('code', $request->input('code'))->first();
+    $myCode = $existCode ? $existCode->code : '';
+    $discount = $existCode ? $existCode->discount : 0;
+
+    $newTotal = DB::table('cart')
+        ->select('cart.*', 'clinical.image', 'clinical.head', 'clinical.price')
+        ->where('user_id', $userId)
+        ->join('clinical', 'clinical.id', '=', 'cart.product_id')
+        ->sum(DB::raw('clinical.price * cart.quantity'));
+        if ($existCode) {
+            if ($newTotal > 100) {
+                Session::flash('success', 'Discount applied!');
+                foreach ($cart as $item) {
+                    $item->discount = $discount;
+                    $item->save();
+                }
+                $request->session()->put('code', $myCode);
+
+            } else {
+                Session::flash('error', 'Discount code is not eligible');
+            }
+        }else {
+           
+            Session::flash('error', 'Coupon does not exist');
+        }
+
+    // $request->session()->put('cart', $cart);
+    return redirect()->back();
+}
 }
 

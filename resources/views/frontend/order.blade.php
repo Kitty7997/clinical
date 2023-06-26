@@ -47,14 +47,15 @@
                         <td>£{{ $data->amount }}</td>
                         <td>{{ $data->quantity }}</td>
                         <td>£{{ $data->total }}</td>
-                        <td></td>
-                        <td></td>
+                        <td>£{{ $data->discount }}</td>
+                        <td>£{{ $data->paid_amount }}</td>
                         {{-- <td>{{ $data->status }}</td> --}}
                         {{-- <td>{{ $data->payment_method_type }}</td> --}}
                         <td>{{ $data->address}}</td>
                         <td><a href="{{ url('/orderremove') }}/{{ $data->id }}"><button
                                     class="button my-remove-btn">Remove</button></a></td>
                     </tr>
+                    <br>
                 @endforeach
 
             </table>

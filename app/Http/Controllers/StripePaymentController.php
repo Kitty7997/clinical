@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Session;
 use App\Models\Cart;
 use App\Models\User;
 use App\Models\Orders;
+use App\Models\Coupon;
+use App\Models\Price;
 use App\Models\Bill;
 use App\Models\Delivery;
 use Illuminate\Support\Facades\DB;
@@ -54,10 +56,9 @@ class StripePaymentController extends Controller
     
             
             $userId = Auth::user()->id;
-            $bill = Bill::where('user_id', $userId)
-            ->orderBy('created_at', 'desc')
-            ->limit(1)
-            ->first();
+            // $price = Price::where('user_id',$userId)->first();
+            // $coupon = Coupon::where('user_id',$userId)->first();
+            $cart = Cart::where('user_id', $userId)->get();
             // dd($bill);
             $newTotal = DB::table('cart')
                 ->select('cart.*', 'clinical.image', 'clinical.head', 'clinical.price')
@@ -70,12 +71,16 @@ class StripePaymentController extends Controller
                 ->where('user_id', $userId)
                 ->join('clinical', 'clinical.id', '=', 'cart.product_id')
                 ->get();
+
+                $cartDiscount = $items->pluck('discount')->first();
+        
+                $finalTotal = $newTotal - $cartDiscount;
     
             foreach ($items as $item) {
                 $item->totalPrice = $item->price * $item->quantity;
             }
     
-            $address = $request->session()->get('addressData');
+            $address = Delivery::where('user_id',$userId)->first();
             //  dd($address);
 
             if ($request->has('stripeToken')) {
@@ -110,7 +115,6 @@ class StripePaymentController extends Controller
                     ],
                 ]);
 
-                
                 if ($paymentIntent->status === 'requires_action' && $paymentIntent->next_action->type === 'use_stripe_sdk') {
                     
                     $clientSecret = $paymentIntent->client_secret;
@@ -128,6 +132,9 @@ class StripePaymentController extends Controller
                         $order->product_head = $product->head;
                         $order->quantity = $product->quantity;
                         $order->total = $product->totalPrice;
+                        $order->discount = $product->discount;
+                        $order->paid_amount = $finalTotal;
+                        // dd($order->paid_amount);
                         $order->address = json_encode($paymentIntent->shipping->address->city);
                         $order->save();
                     }

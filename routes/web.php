@@ -30,6 +30,7 @@ use App\Http\Controllers\CouponController;
     // Cart routes
     Route::get('/cart',[AddToCart::class,'viewCart'])->name('cart');
     Route::post('/add_to_cart',[AddToCart::class,'addTocart'])->name('add_to_cart');
+    Route::post('/add_to_cart_again',[AddToCart::class,'addToCartAgain'])->name('add_to_cart_again');
     Route::get('/remove/{id}', [AddToCart::class, 'removeData'])->name('remove/{id}');
 
     // Delivery routes

@@ -23,6 +23,8 @@ return new class extends Migration
             $table->integer('quantity');
             $table->bigInteger('total');
             $table->text('address');
+            $table->integer('discount');
+            $table->bigInteger('paid_amount');
             $table->timestamps();
         });
     }

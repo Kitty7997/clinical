@@ -291,23 +291,23 @@
                             @if (Session::has('success'))
                                 <div class="my_alert">
                                     <p>{{ Session::get('success') }}</p>
-                                </div>   
+                                </div>
                             @endif
                             @if (Session::has('error'))
                                 <div class="my_error_alert">
                                     <p>{{ Session::get('error') }}</p>
-                                </div>   
+                                </div>
                             @endif
                         </div>
-                        <form action="{{ url('/coupon') }}" method="post">
+                        <form action="{{ url('/add_to_cart_again') }}" method="post">
                             @csrf
                             <div class="order_receipt">
                                 <div class="code_input">
-                                    <input type="text" id="quantity" name="code">
+                                    <input type="text" id="quantity" name="code" value="{{$codeValue}}">
                                     <p>HERTILITYHEALTH</p>
                                 </div>
                                 <div class="code_button">
-                                    <input class="submit_button" value="Apply" type="submit" id="coupon-button">
+                                    <input class="submit_button" value="{{$btnValue}}" type="submit" id="coupon-button">
                                 </div>
                             </div>
                         </form>
@@ -318,7 +318,7 @@
                             <p>Item</p>
                             <p>{{ count($item) }}</p>
                         </div>
-                        {{-- @if($newDiscountedPrice )
+                        {{-- @if ($newDiscountedPrice)
                         
                         <div class="order_receipt">
 						<p style="color: #fa4446;">Discount</p>
@@ -334,7 +334,7 @@
                             <h2>Total</h2>
                             <span>
                                 <p style="font-size: 45px; font-weight: 500; text-align: right;">
-                                    £{{ $newTotal }}.00</p>
+                                    £{{ $finalTotal }}.00</p>
                                 <p style="font-size: font-size: 17px;"></p>
                             </span>
                         </div>
@@ -411,6 +411,10 @@
             $("#newAddress").hide();
             $("#addAddress").show();
         });
+
+        $("#coupon-button").click(function(){
+            $(this).html("Remove");
+            })
 </script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>

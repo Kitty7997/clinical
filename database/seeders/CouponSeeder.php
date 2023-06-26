@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\Coupon;
+use Illuminate\Support\Facades\Auth;
 
 class CouponSeeder extends Seeder
 {
@@ -14,8 +15,8 @@ class CouponSeeder extends Seeder
      */
     public function run(): void
     {
+       
         DB::table('coupon')->insert([
-            'user_id' =>1,
             'code' => 'HERTILITYHEALTH',
             'discount' => 35,
         ]);

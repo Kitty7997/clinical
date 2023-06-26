@@ -12,7 +12,8 @@ class OrderController extends Controller
 {
     public function orderNow(){
        $userId = Auth::user()->id;
-       $order = Orders::where('user_id',$userId)->get();
+       $order = Orders::where('user_id',$userId)->orderBy('created_at','desc')->get();
+    //    dd($order);
 
         $item = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')

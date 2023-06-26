@@ -69,7 +69,7 @@ class DeliveryController extends Controller
             $delivery->postcode = $request->input('postcode');
           
             $delivery->save();
-            $request->session()->put('addressData', $delivery);
+            // $request->session()->put('addressData', $delivery);
         
 
         return redirect('/payment');

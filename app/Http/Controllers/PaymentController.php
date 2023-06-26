@@ -7,8 +7,10 @@ use App\Models\Delivery;
 use Illuminate\Support\Facades\DB;
 use App\Models\Bill;
 use App\Models\Price;
+use App\Models\Cart;
 use App\Models\Coupon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class PaymentController extends Controller
 {
@@ -19,6 +21,12 @@ class PaymentController extends Controller
         $request->session()->put('deliverData', $deliveryData);
         $billData = Bill::where('user_id', $userId)->orderBy('created_at','desc')->first();
         $title = 'Add New Address';
+
+        $coupon = Coupon::first()->code;
+
+        $cart = Cart::where('product_id', $request->input('product_id'))
+        ->where('user_id', $userId)
+        ->first();
        
         $item = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
@@ -26,6 +34,9 @@ class PaymentController extends Controller
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->get();
         // dd($item);
+        $cartDiscount = $item->pluck('discount')->first();
+        // dd($cartDiscount);
+      
     
         $itemCount = $item->where('user_id',$userId)->count();
 
@@ -41,17 +52,17 @@ class PaymentController extends Controller
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->sum(DB::raw('clinical.price * cart.quantity'));
 
-        $newDiscountedPrice = $request->input('discountPrice');
-        // dd($newDiscountedPrice);
-        // if ($newDiscountedPrice) {
-        //     echo "The discounted price is $newDiscountedPrice.";
-        // } else {
-        //     echo "The coupon was not applied.";
-        // }
+        $finalTotal = $newTotal - $cartDiscount;
+
+        $codeValue = $request->session()->get('code');
+       if($cartDiscount > 1){
+        $btnValue = 'Remove';
+       }else{
+        $btnValue = 'Apply';
+       }
 
         
-
-        $data = compact('item','deliveryData','newTotal','billData','url','title','itemCount',);
+        $data = compact('item','deliveryData','newTotal','billData','url','title','itemCount','cart','finalTotal','codeValue','btnValue');
             return view('frontend/payment')->with($data);
         }
 
@@ -81,6 +92,9 @@ class PaymentController extends Controller
         $billData = Bill::where('user_id', $userId)->orderBy('created_at','desc')-first();
         $title = 'Update account here';
         $billDataNew = Bill::find($id);
+        $cart = Cart::where('product_id', $request->input('product_id'))
+        ->where('user_id', $userId)
+        ->first();
         // dd($billData);
         $url = url('/editbilladd'.'/'.$id);
        
@@ -90,6 +104,7 @@ class PaymentController extends Controller
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->get();
         // dd($item);
+        $cartDiscount = $item->pluck('discount')->first();
     
       $itemCount = $item->where('user_id',$userId)->count();
        
@@ -105,8 +120,10 @@ class PaymentController extends Controller
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->sum(DB::raw('clinical.price * cart.quantity'));
 
+        $finalTotal = $newTotal - $cartDiscount;
 
-        $data = compact('item','deliveryData','newTotal','billDataNew','url','billData','title','itemCount');
+
+        $data = compact('item','deliveryData','newTotal','billDataNew','url','billData','title','itemCount','price','finalTotal');
         return view('frontend.payment', $data);
     }
 
