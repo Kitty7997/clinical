@@ -32,6 +32,7 @@ use App\Http\Controllers\CouponController;
     Route::post('/add_to_cart',[AddToCart::class,'addTocart'])->name('add_to_cart');
     Route::post('/add_to_cart_again',[AddToCart::class,'addToCartAgain'])->name('add_to_cart_again');
     Route::get('/remove/{id}', [AddToCart::class, 'removeData'])->name('remove/{id}');
+    Route::post('/forget',[AddToCart::class,'forgetCart']);
 
     // Delivery routes
     Route::get('/delivery',[DeliveryController::class,'dealControl'])->name('delivery');
@@ -47,6 +48,7 @@ use App\Http\Controllers\CouponController;
     Route::get('/billedit/{id}',[PaymentController::class,'paymentEditController'])->name('billedit/{id}');
     Route::post('/editbilladd/{id}',[PaymentController::class,'editbill'])->name('editbilladd/{id}');
     Route::get('/deletebill/{id}',[PaymentController::class,'deleteBill'])->name('deletebill/{id}');
+    
 
     // stripe routes
     Route::get('/stripe',[StripePaymentController::class,'stripe']);

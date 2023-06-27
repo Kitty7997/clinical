@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class DeliveryController extends Controller
 {
-    public function dealControl(){
+    public function dealControl(Request $request){
         $userId = Auth::user()->id;
         $deliveryData = Delivery::where('user_id', $userId)->orderBy('created_at','desc')->first();
         // dd($deliveryData);
@@ -22,6 +22,8 @@ class DeliveryController extends Controller
           ->join('clinical', 'clinical.id', '=', 'cart.product_id')
           ->get();
           // dd($item);
+
+          $cartDiscount = $item->pluck('discount')->first();
         
           $itemCount = $item->where('user_id',$userId)->count();
         
@@ -38,8 +40,19 @@ class DeliveryController extends Controller
         ->join('clinical', 'clinical.id', '=', 'cart.product_id')
         ->sum(DB::raw('clinical.price * cart.quantity'));
        
+        $finalTotal = $newTotal - $cartDiscount;
 
-        $data = compact('item','newTotal','deliveryData','url','itemCount');
+        $codeValue = $request->session()->get('code');
+        // dd($codeValue);
+        if($cartDiscount > 1){
+            $btnValue = 'Remove';
+            $myUrl = url('/forget');
+        }else{
+            $btnValue = 'Apply';
+            $myUrl = url('/add_to_cart_again');
+        }
+
+        $data = compact('item','newTotal','deliveryData','url','itemCount','codeValue','myUrl','btnValue','finalTotal','cartDiscount');
         return view('frontend/delivery')->with($data);
     }
 

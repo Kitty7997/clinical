@@ -112,7 +112,7 @@ class AddToCart extends Controller
 
     $cart = Cart::where('user_id', $userId)
         ->get();
-    
+   
     $existCode = Coupon::where('code', $request->input('code'))->first();
     $myCode = $existCode ? $existCode->code : '';
     $discount = $existCode ? $existCode->discount : 0;
@@ -130,6 +130,8 @@ class AddToCart extends Controller
                     $item->save();
                 }
                 $request->session()->put('code', $myCode);
+                // $myUrl = url('/add_to_cart_delete');
+                // $request->session()->put('url',$url);
 
             } else {
                 Session::flash('error', 'Discount code is not eligible');
@@ -142,5 +144,30 @@ class AddToCart extends Controller
     // $request->session()->put('cart', $cart);
     return redirect()->back();
 }
+
+    public function forgetCart(Request $request){
+        $userId = Auth::user()->id;
+        $couponData = Coupon::all();
+    
+        $existCode = Coupon::first();
+        // dd($existCode);
+        $cart = Cart::where('user_id', $userId)->get();
+        $myCode = $existCode ? $existCode->code : '';
+        $discount = $existCode ? $existCode->discount : 0;
+    
+        $newTotal = DB::table('cart')
+            ->select('cart.*', 'clinical.image', 'clinical.head', 'clinical.price')
+            ->where('user_id', $userId)
+            ->join('clinical', 'clinical.id', '=', 'cart.product_id')
+            ->sum(DB::raw('clinical.price * cart.quantity'));
+            if ($existCode) {
+                $request->session()->forget('code');
+                foreach ($cart as $item) {
+                    $item->discount = 0;
+                    $item->save();
+                }
+            }
+        return redirect()->back();
+    }
 }
 

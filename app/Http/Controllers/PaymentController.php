@@ -28,6 +28,9 @@ class PaymentController extends Controller
         ->where('user_id', $userId)
         ->first();
        
+        
+        // dd($cartCoupon);
+       
         $item = DB::table('cart')
         ->select('cart.*','clinical.image','clinical.head','clinical.price')
         ->where('user_id', $userId)
@@ -55,14 +58,17 @@ class PaymentController extends Controller
         $finalTotal = $newTotal - $cartDiscount;
 
         $codeValue = $request->session()->get('code');
-       if($cartDiscount > 1){
-        $btnValue = 'Remove';
-       }else{
-        $btnValue = 'Apply';
-       }
+       
+        if($cartDiscount > 1){
+            $btnValue = 'Remove';
+            $myUrl = url('/forget');
+        }else{
+            $btnValue = 'Apply';
+            $myUrl = url('/add_to_cart_again');
+        }
 
         
-        $data = compact('item','deliveryData','newTotal','billData','url','title','itemCount','cart','finalTotal','codeValue','btnValue');
+        $data = compact('item','deliveryData','newTotal','billData','url','title','itemCount','cart','finalTotal','codeValue','myUrl','btnValue','cartDiscount');
             return view('frontend/payment')->with($data);
         }
 

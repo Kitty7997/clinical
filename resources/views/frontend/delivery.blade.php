@@ -204,71 +204,91 @@
 			</div>
 		</div>
 		@else
-			<div class="payment_top">
-				<div class="payment_right">
-					<p class="order">Your order</p>
-					@foreach($item as $data)
+		<div class="payment_top">
+			<div class="payment_right">
+				<p class="order">Your order</p>
+				@foreach ($item as $data)
 					<div class="hormone_test">
 						<div class="step_left">
-							<img src="{{$data->image}}">
+							<img src="{{ $data->image }}">
 						</div>
 
 						<div class="step_center">
-							<h3>{{$data->head}}</h3>
+							<h3>{{ $data->head }}</h3>
 							<div class="price_dispaly">
-							<h3>£{{$data->totalPrice}}.00</h3>
-							<h5>Quantity:{{$data->quantity}}</h5>
+								<h3>£{{ $data->totalPrice }}.00</h3>
+								<h5>Quantity:{{ $data->quantity }}</h5>
 							</div>
 						</div>
 
 						<div class="step_right">
-							<a href="{{url('/remove')}}/{{$data->id}}">
-							<img class="cross_white" src="../images/cross_white.svg">
+							<a href="{{ url('/remove') }}/{{ $data->id }}">
+								<img class="cross_white" src="../images/cross_white.svg">
 							</a>
 						</div>
 					</div>
-					@endforeach
+				@endforeach
 
-					<div class="discount_code">
+				<div class="discount_code">
+					<div class="order_receipt">
+						<p class="code_text">Discount code</p>
+						@if (Session::has('success'))
+							<div class="my_alert">
+								<p>{{ Session::get('success') }}</p>
+							</div>
+						@endif
+						@if (Session::has('error'))
+							<div class="my_error_alert">
+								<p>{{ Session::get('error') }}</p>
+							</div>
+						@endif
+					</div>
+					<form action="{{$myUrl}}" method="post">
+						@csrf
 						<div class="order_receipt">
-							<p class="code_text">Discount code</p>
-							<p class="applied_msg">Discount applied!</p>
-					    </div>
-					    <div class="order_receipt">
 							<div class="code_input">
-								<input type="number" id="quantity" name="quantity">
+								<input type="text" id="quantity" name="code" value="{{$codeValue}}">
 								<p>HERTILITYHEALTH</p>
 							</div>
 							<div class="code_button">
-								<input class="submit_button" value="Apply" type="submit">
+								<input class="submit_button" value="{{$btnValue}}" type="submit" id="coupon-button">
 							</div>
-					    </div>
-					</div>
+						</div>
+					</form>
+				</div>
 
-				<div class="receipt">	
+				<div class="receipt">
 					<div class="order_receipt">
 						<p>Item</p>
-						<p>1</p>
+						<p>{{ count($item) }}</p>
 					</div>
-					{{-- <div class="order_receipt">
-						<p style="color: #fa4446;">Discount</p>
-						<p style="color: #fa4446;">-£35</p>
-					</div> --}}
+					@if ($codeValue)
+					
+					<div class="order_receipt">
+					<p style="color: #fa4446;">Discount</p>
+					<p style="color: #fa4446;">-£{{$cartDiscount}}</p>
+					</div>
+					@else
+					@endif
 					<div class="order_receipt">
 						<p>Shipping Cart</p>
 						<p>Free</p>
 					</div>
 					<div class="order_receipt">
 						<h2>Total</h2>
-						<span><p style="font-size: 45px; font-weight: 500; text-align: right;">£{{$newTotal}}.00</p><p style="font-size: font-size: 17px;"></p></span>
+						<span>
+							<p style="font-size: 45px; font-weight: 500; text-align: right;">
+								£{{ $finalTotal }}.00</p>
+							<p style="font-size: font-size: 17px;"></p>
+						</span>
 					</div>
 				</div>
-					<p class="bottom_text">We get it, private healthcare isn't cheap.</p>
-				</div>
-				<div class="payment_bottom">
-					<p>Excellent <img src="../images/trustpilot_rating.svg"></p>
-				</div>
-		    </div>
+				<p class="bottom_text">We get it, private healthcare isn't cheap.</p>
+			</div>
+			<div class="payment_bottom">
+				<p>Excellent <img src="../images/trustpilot_rating.svg"></p>
+			</div>
+		</div>
 			@endif
 		</div>
 	</div>

@@ -299,7 +299,7 @@
                                 </div>
                             @endif
                         </div>
-                        <form action="{{ url('/add_to_cart_again') }}" method="post">
+                        <form action="{{$myUrl}}" method="post">
                             @csrf
                             <div class="order_receipt">
                                 <div class="code_input">
@@ -318,14 +318,14 @@
                             <p>Item</p>
                             <p>{{ count($item) }}</p>
                         </div>
-                        {{-- @if ($newDiscountedPrice)
+                        @if ($codeValue)
                         
                         <div class="order_receipt">
 						<p style="color: #fa4446;">Discount</p>
-						<p style="color: #fa4446;">-£35</p>
+						<p style="color: #fa4446;">-£{{$cartDiscount}}</p>
 					    </div>
                         @else
-                        @endif --}}
+                        @endif
                         <div class="order_receipt">
                             <p>Shipping Cart</p>
                             <p>Free</p>
