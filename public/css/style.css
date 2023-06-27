@@ -193,6 +193,13 @@ td img{
     color: #e33;
 }
 
+.d-flex{
+    display: flex;
+}
+
+.ms-3{
+    margin-left: 10px !important;
+}
 /*new header css*/
 .new_header {
     height: 100px;

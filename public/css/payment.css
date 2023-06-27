@@ -282,7 +282,7 @@ input.submit_button {
     padding: 5px 10px;
     border-radius: 16px;
     font-size: 12px !important;
-    width: 106px;
+    /* width: 106px; */
     margin-top: 10px !important;
 }
 .discount_code .order_receipt:nth-child(2){

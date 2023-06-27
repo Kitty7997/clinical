@@ -24,6 +24,7 @@ class DeliveryController extends Controller
           // dd($item);
 
           $cartDiscount = $item->pluck('discount')->first();
+          $cartPercentage = $item->pluck('percentage')->first();
         
           $itemCount = $item->where('user_id',$userId)->count();
         
@@ -41,10 +42,18 @@ class DeliveryController extends Controller
         ->sum(DB::raw('clinical.price * cart.quantity'));
        
         $finalTotal = $newTotal - $cartDiscount;
+        $finalTotal2 = $newTotal-$newTotal*$cartPercentage/100;
+
+        $totalValue = $cartDiscount ? $finalTotal : $finalTotal2;
 
         $codeValue = $request->session()->get('code');
+        $percentValue = $request->session()->get('percent');
+
+        $inputData = $codeValue ? $codeValue : $percentValue;
+
+        $totalDiscount = $cartDiscount ? $cartDiscount : $cartPercentage.'%';
         // dd($codeValue);
-        if($cartDiscount > 1){
+        if($totalDiscount > 1){
             $btnValue = 'Remove';
             $myUrl = url('/forget');
         }else{
@@ -52,7 +61,7 @@ class DeliveryController extends Controller
             $myUrl = url('/add_to_cart_again');
         }
 
-        $data = compact('item','newTotal','deliveryData','url','itemCount','codeValue','myUrl','btnValue','finalTotal','cartDiscount');
+        $data = compact('item','newTotal','deliveryData','url','itemCount','codeValue','myUrl','btnValue','finalTotal','cartDiscount','totalValue','inputData','totalDiscount');
         return view('frontend/delivery')->with($data);
     }
 

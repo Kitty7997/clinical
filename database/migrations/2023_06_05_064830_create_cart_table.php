@@ -16,7 +16,8 @@ return new class extends Migration
             $table->integer('product_id');
             $table->integer('user_id');
             $table->integer('quantity')->default(1);
-            $table->string('discount')->default('0');
+            $table->integer('discount')->default('0');
+            $table->integer('percentage')->default('0');
             $table->timestamps();
         });
     }

@@ -51,15 +51,11 @@ class StripePaymentController extends Controller
     public function stripePost(Request $request)
     {
         try {
-            
             Stripe::setApiKey(env('STRIPE_SECRET'));
     
-            
             $userId = Auth::user()->id;
-            // $price = Price::where('user_id',$userId)->first();
-            // $coupon = Coupon::where('user_id',$userId)->first();
             $cart = Cart::where('user_id', $userId)->get();
-            // dd($bill);
+    
             $newTotal = DB::table('cart')
                 ->select('cart.*', 'clinical.image', 'clinical.head', 'clinical.price')
                 ->where('user_id', $userId)
@@ -71,33 +67,30 @@ class StripePaymentController extends Controller
                 ->where('user_id', $userId)
                 ->join('clinical', 'clinical.id', '=', 'cart.product_id')
                 ->get();
-
-                $cartDiscount = $items->pluck('discount')->first();
-        
-                $finalTotal = $newTotal - $cartDiscount;
+    
+            $cartDiscount = $items->pluck('discount')->first();
+            $cartPercentage = $items->pluck('percentage')->first();
+    
+            $finalTotal = $newTotal - $cartDiscount;
+            $finalTotal2 = $newTotal - ($newTotal * $cartPercentage / 100);
+    
+            $totalValue = $cartDiscount ? $finalTotal : $finalTotal2;
+            $totalDiscount = $cartDiscount ? $cartDiscount : $cartPercentage;
     
             foreach ($items as $item) {
                 $item->totalPrice = $item->price * $item->quantity;
             }
     
-            $address = Delivery::where('user_id',$userId)->first();
-            //  dd($address);
-
+            $address = Delivery::where('user_id', $userId)->first();
+    
             if ($request->has('stripeToken')) {
-                
                 $paymentMethod = PaymentMethod::create([
                     'type' => 'card',
                     'card' => [
                         'token' => $request->stripeToken,
                     ],
-                    // 'billing_details' => [
-                    //     'email' => $bill->email,
-                    //     'name' => $bill->fname,
-                    //     'phone' => $bill->number,
-                    //     ],
                 ]);
-                
-                // dd($paymentMethod);
+    
                 $paymentIntent = PaymentIntent::create([
                     'amount' => $newTotal * 100,
                     'currency' => 'usd',
@@ -105,7 +98,7 @@ class StripePaymentController extends Controller
                     'description' => 'Test payment',
                     'confirm' => true,
                     "shipping" => [
-                        "name" => $address ->fname,
+                        "name" => $address->fname,
                         "address" => [
                             "line1" => $address->phone,
                             "postal_code" => $address->postcode,
@@ -114,11 +107,9 @@ class StripePaymentController extends Controller
                         ],
                     ],
                 ]);
-
+    
                 if ($paymentIntent->status === 'requires_action' && $paymentIntent->next_action->type === 'use_stripe_sdk') {
-                    
                     $clientSecret = $paymentIntent->client_secret;
-                   
                     return response()->json(['requires_action' => true, 'client_secret' => $clientSecret]);
                 } elseif ($paymentIntent->status === 'succeeded') {
                     foreach ($items as $product) {
@@ -132,18 +123,18 @@ class StripePaymentController extends Controller
                         $order->product_head = $product->head;
                         $order->quantity = $product->quantity;
                         $order->total = $product->totalPrice;
-                        $order->discount = $product->discount;
-                        $order->paid_amount = $finalTotal;
-                        // dd($order->paid_amount);
+                        $order->discount = $totalDiscount;
+                        $order->paid_amount = $totalValue;
                         $order->address = json_encode($paymentIntent->shipping->address->city);
                         $order->save();
                     }
     
                     Cart::where('user_id', $userId)->delete();
+                    $request->session()->forget('code');
+                    $request->session()->forget('percent');
                     Session::flash('success', 'Your order has been placed!');
                     return redirect('/order');
                 } else {
-                    
                     return response()->json(['error' => 'Payment failed.']);
                 }
             } else {
@@ -151,10 +142,10 @@ class StripePaymentController extends Controller
                 return redirect('/cart');
             }
         } catch (Exception $e) {
-
             return response()->json(['error' => 'An error occurred during payment. Please try again.']);
         }
     }
+    
     
 
 }

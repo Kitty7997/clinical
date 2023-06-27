@@ -27,7 +27,6 @@ class PaymentController extends Controller
         $cart = Cart::where('product_id', $request->input('product_id'))
         ->where('user_id', $userId)
         ->first();
-       
         
         // dd($cartCoupon);
        
@@ -38,7 +37,9 @@ class PaymentController extends Controller
         ->get();
         // dd($item);
         $cartDiscount = $item->pluck('discount')->first();
-        // dd($cartDiscount);
+        $cartPercentage = $item->pluck('percentage')->first();
+        
+        // dd($cartPercentage);
       
     
         $itemCount = $item->where('user_id',$userId)->count();
@@ -56,10 +57,19 @@ class PaymentController extends Controller
         ->sum(DB::raw('clinical.price * cart.quantity'));
 
         $finalTotal = $newTotal - $cartDiscount;
+        $finalTotal2 = $newTotal-$newTotal*$cartPercentage/100;
+
+        $totalValue = $cartDiscount ? $finalTotal : $finalTotal2;
 
         $codeValue = $request->session()->get('code');
+
+        $percentValue = $request->session()->get('percent');
+
+        $inputData = $codeValue ? $codeValue : $percentValue;
+
+        $totalDiscount = $cartDiscount ? $cartDiscount : $cartPercentage.'%';
        
-        if($cartDiscount > 1){
+        if($totalDiscount > 1){
             $btnValue = 'Remove';
             $myUrl = url('/forget');
         }else{
@@ -67,8 +77,7 @@ class PaymentController extends Controller
             $myUrl = url('/add_to_cart_again');
         }
 
-        
-        $data = compact('item','deliveryData','newTotal','billData','url','title','itemCount','cart','finalTotal','codeValue','myUrl','btnValue','cartDiscount');
+        $data = compact('item','deliveryData','newTotal','billData','url','title','itemCount','cart','codeValue','myUrl','btnValue','cartDiscount','percentValue','cartPercentage','inputData','totalDiscount','finalTotal','finalTotal2','totalValue');
             return view('frontend/payment')->with($data);
         }
 
@@ -112,7 +121,7 @@ class PaymentController extends Controller
         // dd($item);
         $cartDiscount = $item->pluck('discount')->first();
     
-      $itemCount = $item->where('user_id',$userId)->count();
+        $itemCount = $item->where('user_id',$userId)->count();
        
         // $NewtotalPrice = 0;
         foreach($item as $key=>$value){

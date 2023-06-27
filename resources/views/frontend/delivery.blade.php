@@ -247,8 +247,11 @@
 						@csrf
 						<div class="order_receipt">
 							<div class="code_input">
-								<input type="text" id="quantity" name="code" value="{{$codeValue}}">
-								<p>HERTILITYHEALTH</p>
+								<input type="text" id="quantity" name="code" value="{{$inputData}}">
+								<div class="d-flex">
+									<p>HERTILITYHEALTH</p>
+									<p class="ms-3">TEJENDER</p>
+								</div>
 							</div>
 							<div class="code_button">
 								<input class="submit_button" value="{{$btnValue}}" type="submit" id="coupon-button">
@@ -262,11 +265,11 @@
 						<p>Item</p>
 						<p>{{ count($item) }}</p>
 					</div>
-					@if ($codeValue)
+					@if ($inputData)
 					
 					<div class="order_receipt">
 					<p style="color: #fa4446;">Discount</p>
-					<p style="color: #fa4446;">-£{{$cartDiscount}}</p>
+					<p style="color: #fa4446;">-£{{$totalDiscount}}</p>
 					</div>
 					@else
 					@endif
@@ -278,7 +281,7 @@
 						<h2>Total</h2>
 						<span>
 							<p style="font-size: 45px; font-weight: 500; text-align: right;">
-								£{{ $finalTotal }}.00</p>
+								£{{ $totalValue }}.00</p>
 							<p style="font-size: font-size: 17px;"></p>
 						</span>
 					</div>

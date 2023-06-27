@@ -19,6 +19,9 @@ class CouponSeeder extends Seeder
         DB::table('coupon')->insert([
             'code' => 'HERTILITYHEALTH',
             'discount' => 35,
+            'coupon' => 'TEJENDER',
+            'percentage' => 10,
+
         ]);
     }
 }
