@@ -29,7 +29,10 @@ class OrderController extends Controller
     }
 
     public function removeorder($id){
+        $userId = Auth::user()->id;
         $orderValue = Orders::destroy($id);
-        return redirect()->back();
+        $order = Orders::where('user_id',$userId)->orderBy('created_at','desc')->get();
+        $ordercount = $order->count();
+        return response()->json(['order' => $ordercount]);
     }
 }

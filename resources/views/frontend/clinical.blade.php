@@ -1,44 +1,61 @@
-@include('frontend.header')
+@include('frontend/header')
 
 <!-- <iframe class="common_header" src="../pages/header.html"></iframe> -->
 
 <section class="clinicial-services">
-	<div class="container">
-		<div class="top-header">
-			<h3>Clinicial Services</h3>
-		</div>
+    <div class="container">
+        <div class="top-header">
+            <h3>Clinicial Services</h3>
+        </div>
 
-		@foreach($clinicaldata as $data)
-		<div class="nurse_visit">
-			<div class="nurse_visit_inner">
-				<div class="left_img">
-					<img src="{{$data->image}}">
-				</div>
-				<div class="center_text">
-					<h3>{{$data->head}}</h3>
-					<h3>£{{$data->price}}</h3>
-					<p>{{$data->para}}</p>
-					<a href="#">More info</a>
-				</div>
-				<div class="right_button">
-					<form action="{{url('/add_to_cart')}}" method="post">
-						@csrf
-					<input type="hidden" name="product_id" value="{{$data->id}}">
-					<button class="button">Add</button>
-					</form>
-					<!-- <a href="{{url('/add_to_cart')}}" name="product_id" value="{{$data->id}}">
-					<button type="button">Add</button>
-					</a> -->
-				</div>
-			</div>
-		</div>
-		@endforeach
+        @foreach ($clinicaldata as $data)
+            <div class="nurse_visit">
+                <div class="nurse_visit_inner">
+                    <div class="left_img">
+                        <img src="{{ $data->image }}">
+                    </div>
+                    <div class="center_text">
+                        <h3>{{ $data->head }}</h3>
+                        <h3>£{{ $data->price }}</h3>
+                        <p>{{ $data->para }}</p>
+                        <a href="#">More info</a>
+                    </div>
+                    <div class="right_button">
+                        <button class="button" onclick="addTocart('{{ $data->id }}')">Add</button>
 
-		<div class="clinicial_services_bottom">
-			<button type="button">Continue with Hormone & Fertility Test only</button>
-		</div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
 
-	</div>
+        <div class="clinicial_services_bottom">
+            <button type="button">Continue with Hormone & Fertility Test only</button>
+        </div>
+
+    </div>
 </section>
+
+
+<script>
+    function addTocart(id) {
+        var csrfToken = '{{ csrf_token() }}';
+        var url = '/add_to_cart'
+        var data = {
+            id: id,
+            _token: csrfToken
+        };
+         $.ajax({
+            type: 'POST',
+            url: url,
+            data: data,
+            success: function(result) {
+                console.log(result.count)
+                $('#cartCount').addClass('cart_style');
+                $('#cartCount').text(result.count);
+            }
+        });
+    }
+</script>
 </body>
+
 </html>

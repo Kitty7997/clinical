@@ -22,7 +22,7 @@
             </div>
 
 
-            <form class="account_form" action="{{ url('/postregister') }}" method="post">
+            <form class="account_form" action="{{ url('/postregister') }}" method="post" id="ContactUs">
                 @csrf
                 <div class="inner_name">
                     <label class="form_label" for="fname">First name:
@@ -93,7 +93,7 @@
                     </div>
                 </div>
                 <div class="continue_button">
-                    <button class="button">Continue</button>
+                    <input type="submit" value="Continue" class="button_submit">
                 </div>
                 <!-- <input type="submit" value="Submit"> -->
             </form>
@@ -114,4 +114,20 @@
                 $(this).addClass("active");
             });
     });
+
+    // $(document).ready(function() {
+    //     $('#ContactUs').on('submit', function(event) {
+    //         event.preventDefault();
+
+    //         var formData = $('#ContactUs').serialize();
+    //         $.ajax({
+    //             type: 'POST',
+    //             url: '/postregister',
+    //             data: formData,
+    //             success: function() {
+    //                 $('#ContactUs')[0].reset();
+    //             }
+    //         });
+    //     });
+    // });
 </script>

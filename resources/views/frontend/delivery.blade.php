@@ -11,7 +11,7 @@
 				
 				@if(!$deliveryData)
 				@else
-				<div class="detail_step">
+				<div class="detail_step" id="delivery_id{{$deliveryData->id}}">
 					<div class="left_details">
 						<h4><svg class="green_tick" width="13" height="11" viewBox="0 0 13 11" fill="none" xmlns="http://www.w3.org/2000/svg">
 						<path d="M11.7385 1.8468L4.60555 9.01551L1.03906 5.43116" stroke="#FBF9F8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -26,7 +26,7 @@
 								<button id="editBtnDelivery" class="button">Edit</button>
 							</div>
 						</a>
-						<a href="{{url('/delete')}}/{{$deliveryData->id}}">
+						<a onclick="deleteItem('{{$deliveryData->id}}')">
 							<div class="right_button_edit">
 								<button class="button">Remove</button>
 							</div>
@@ -208,7 +208,7 @@
 			<div class="payment_right">
 				<p class="order">Your order</p>
 				@foreach ($item as $data)
-					<div class="hormone_test">
+					<div class="hormone_test" id="delete{{ $data->id }}">
 						<div class="step_left">
 							<img src="{{ $data->image }}">
 						</div>
@@ -222,7 +222,7 @@
 						</div>
 
 						<div class="step_right">
-							<a href="{{ url('/remove') }}/{{ $data->id }}">
+							<a onclick="removeItem('{{$data->id}}')">
 								<img class="cross_white" src="../images/cross_white.svg">
 							</a>
 						</div>
@@ -263,7 +263,7 @@
 				<div class="receipt">
 					<div class="order_receipt">
 						<p>Item</p>
-						<p>{{ count($item) }}</p>
+						<p id="deliverycartCount">{{$itemCount}}</p>
 					</div>
 					@if ($inputData)
 					
@@ -280,7 +280,7 @@
 					<div class="order_receipt">
 						<h2>Total</h2>
 						<span>
-							<p style="font-size: 45px; font-weight: 500; text-align: right;">
+							<p style="font-size: 45px; font-weight: 500; text-align: right;" id="amount">
 								£{{ $totalValue }}.00</p>
 							<p style="font-size: font-size: 17px;"></p>
 						</span>
@@ -323,5 +323,53 @@
      $("#deliveryAddress").hide();
      // $("#addAddress").show();
   });
+
+
+  function removeItem(id){
+        var url = `{{ url('/remove/') }}/${id}`;
+      
+       var csrfToken = '{{ csrf_token() }}';
+       var data = {
+            id : id,
+            _token: csrfToken
+        };
+        $.ajax({
+            type: 'GET',
+            url: url,
+            data: data,
+            success: function(result) {
+				if (result.count < 1) {
+					$('#cartCount').removeClass('cart_style');
+					$('#cartCount').empty();
+					$('#deliverycartCount').text(result.count);
+				}else{
+					$('#cartCount').text(result.count);
+				    $('#deliverycartCount').text(result.count);
+				}
+                $('#delete' + id).remove();
+				$('#amount').text('£' + result.total + '.00');
+            }
+        });
+    }
+
+	
+
+	function deleteItem(id){
+        var url = `{{ url('/delete/') }}/${id}`;
+      
+       var csrfToken = '{{ csrf_token() }}';
+       var data = {
+            id : id,
+            _token: csrfToken
+        };
+        $.ajax({
+            type: 'GET',
+            url: url,
+            data: data,
+            success: function(result) {
+                $('#delivery_id' + id).remove();
+            }
+        });
+    }
 </script>
 

@@ -32,7 +32,7 @@ img.cross_icon {
     display: flex;
     justify-content: space-between;
     padding-bottom: 10px;
-    align-items: center;
+    /* align-items: center; */
 }
 .order_receipt p {
     color: #fff;
@@ -56,6 +56,16 @@ img.cross_icon {
     padding-bottom: 0;
 }
 .assesment_button button{
+	background: #fa4446;
+    color: #fafafa;
+    border: none;
+    font-size: 14px;
+    border-radius: 5px;
+    height: 35px;
+    cursor: pointer;
+    padding: 0 35px;
+}
+.button_submit{
 	background: #fa4446;
     color: #fafafa;
     border: none;

@@ -1,16 +1,16 @@
 @include('frontend/header')
-@if (Session::has('success'))
+{{-- @if (Session::has('success'))
     <div class="alert-success text-center">
         <p>{{ Session::get('success') }}</p>
     </div>
-@endif
+@endif --}}
 <section class="order_sec">
     <div class="container_fluid">
         <div class="top_heading">
             <h1>Yours Orders</h1>
         </div>
-        @if ($order->isEmpty())
-            <div class="order_box">
+       
+            <div class="order_box" id="box_order">
                 <div class="order_img">
                     <img src="../images/order-icon.png">
                 </div>
@@ -23,8 +23,8 @@
                     </div>
                 </a>
             </div>
-        @else
-            <table style="width:100%">
+       
+            <table style="width:100%" id="my_table">
                 <tr>
                     <th>Image</th>
                     <th>Heading</th>
@@ -40,7 +40,7 @@
                     <th>Remove</th>
                 </tr>
                 @foreach ($order as $data)
-                    <tr>
+                    <tr id="delete_data{{ $data->id }}">
                         <td><img src={{ $data->product_image }} alt="order image"></td>
                         <td>{{ $data->product_head }}</td>
                         {{-- <td>{{ $data->order_id }}</td> --}}
@@ -51,17 +51,46 @@
                         <td>£{{ $data->paid_amount }}</td>
                         {{-- <td>{{ $data->status }}</td> --}}
                         {{-- <td>{{ $data->payment_method_type }}</td> --}}
-                        <td>{{ $data->address}}</td>
-                        <td><a href="{{ url('/orderremove') }}/{{ $data->id }}"><button
+                        <td>{{ $data->address }}</td>
+                        <td><a onclick="deleteItem('{{ $data->id }}')"><button
                                     class="button my-remove-btn">Remove</button></a></td>
                     </tr>
                     <br>
                 @endforeach
 
             </table>
-        @endif
+        
     </div>
 </section>
+
+
+<script>
+    function deleteItem(id) {
+        var url = `{{ url('/orderremove/') }}/${id}`;
+        csrfToken = '{{ csrf_token() }}'
+        var data = {
+            id: id,
+            _token: csrfToken
+        };
+        $.ajax({
+            type: 'GET',
+            url: url,
+            data: data,
+            success: function(result) {
+                console.log(result.order)
+                if(result.order < 1){
+                    $('#my_table').hide()
+                    $('#box_order').show()
+                }else{
+                    $('#my_table').show()
+                    $('#box_order').hide()
+                }
+                $('#delete_data' + id).remove();
+            }
+        })
+
+    }
+</script>
 </body>
 
 </html>

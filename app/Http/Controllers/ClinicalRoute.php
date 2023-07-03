@@ -14,6 +14,7 @@ class ClinicalRoute extends Controller
    public function ClinicalRoute(Request $request){
     $clinicaldata = Clinical::all();
     $cartData = Cart::all();
+
     $userId = Auth::user();
     $item = null;
     $itemCount = 0;
@@ -28,7 +29,6 @@ class ClinicalRoute extends Controller
       $itemCount = $item->where('user_id',$userId->id)->count();
     }
     
-    // dd($itemCount);
     $cart = $request->session()->get('item');
 
     $data = compact('clinicaldata','item','cart','cartData','itemCount');

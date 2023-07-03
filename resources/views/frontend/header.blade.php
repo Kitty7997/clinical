@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+    {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> --}}
     <link rel="stylesheet" type="text/css" href="../css/add-ons.css">
     <link rel="stylesheet" type="text/css" href="../css/payment.css">
     <link rel="stylesheet" type="text/css" href="../css/cart.css">
@@ -15,12 +16,13 @@
     <link rel="stylesheet" type="text/css" href="../css/test.css">
     <link rel="stylesheet" type="text/css" href="../css/delivery.css">
     <link rel="stylesheet" type="text/css" href="../css/order.css">
-    {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+
     <title>Your Test</title>
 </head>
 
 <body>
-    
+
 
     <header class="new_header">
         <div class="container_new">
@@ -62,7 +64,7 @@
                         <a href="#">Test</a>
                         <a href="{{ url('/order') }}">Order</a>
                         @if (Session::has('userData'))
-                            <a href="{{ url('/logout') }}">Logout</a>
+                            <a href="{{ url('/logouttt') }}">Logout</a>
                         @else
                         @endif
                     </div>
@@ -75,9 +77,13 @@
                             </path>
                         </svg>
                         @if (Session::has('userData'))
-                            @if ($itemCount > 0)
-                                <span class="cart_style">{{ $itemCount }}</span>
-                            @endif
+                        
+                            <span @if ($itemCount > 0) class="cart_style" @endif id="cartCount">
+                                @if ($itemCount > 0)
+                                    {{ $itemCount }}
+                                @endif
+                            </span>
+
                         @endif
 
                     </a>
@@ -202,24 +208,24 @@
                         <p>Delivery</p>
                     </a>
 
-                
-                        <a href="{{ url('/payment') }}" class="test_step">
-                            <span class="test_tube_hold"><svg height="25" width="25" fill="#fff"
-                                    viewBox="0 0 25 25" version="1.1" xmlns="http://www.w3.org/2000/svg"
-                                    xmlns:xlink="http://www.w3.org/1999/xlink">
-                                    <g id="🔍-Product-Icons" stroke="none" stroke-width="1" fill="none"
-                                        fill-rule="evenodd">
-                                        <g id="ic_fluent_payment_24_filled" fill="#212121" fill-rule="nonzero">
-                                            <path fill="#fff"
-                                                d="M21.9883291,10.9947074 L21.9888849,16.275793 C21.9888849,17.7383249 20.8471803,18.9341973 19.4064072,19.0207742 L19.2388849,19.025793 L4.76104885,19.025793 C3.29851702,19.025793 2.10264457,17.8840884 2.01606765,16.4433154 L2.01104885,16.275793 L2.01032912,10.9947074 L21.9883291,10.9947074 Z M18.2529045,14.5 L15.7529045,14.5 L15.6511339,14.5068466 C15.2850584,14.556509 15.0029045,14.8703042 15.0029045,15.25 C15.0029045,15.6296958 15.2850584,15.943491 15.6511339,15.9931534 L15.7529045,16 L18.2529045,16 L18.3546751,15.9931534 C18.7207506,15.943491 19.0029045,15.6296958 19.0029045,15.25 C19.0029045,14.8703042 18.7207506,14.556509 18.3546751,14.5068466 L18.2529045,14.5 Z M19.2388849,5.0207074 C20.7014167,5.0207074 21.8972891,6.162412 21.9838661,7.60318507 L21.9888849,7.7707074 L21.9883291,9.4947074 L2.01032912,9.4947074 L2.01104885,7.7707074 C2.01104885,6.30817556 3.15275345,5.11230312 4.59352652,5.02572619 L4.76104885,5.0207074 L19.2388849,5.0207074 Z"
-                                                id="🎨-Color"></path>
-                                        </g>
+
+                    <a href="{{ url('/payment') }}" class="test_step">
+                        <span class="test_tube_hold"><svg height="25" width="25" fill="#fff"
+                                viewBox="0 0 25 25" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                                xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <g id="🔍-Product-Icons" stroke="none" stroke-width="1" fill="none"
+                                    fill-rule="evenodd">
+                                    <g id="ic_fluent_payment_24_filled" fill="#212121" fill-rule="nonzero">
+                                        <path fill="#fff"
+                                            d="M21.9883291,10.9947074 L21.9888849,16.275793 C21.9888849,17.7383249 20.8471803,18.9341973 19.4064072,19.0207742 L19.2388849,19.025793 L4.76104885,19.025793 C3.29851702,19.025793 2.10264457,17.8840884 2.01606765,16.4433154 L2.01104885,16.275793 L2.01032912,10.9947074 L21.9883291,10.9947074 Z M18.2529045,14.5 L15.7529045,14.5 L15.6511339,14.5068466 C15.2850584,14.556509 15.0029045,14.8703042 15.0029045,15.25 C15.0029045,15.6296958 15.2850584,15.943491 15.6511339,15.9931534 L15.7529045,16 L18.2529045,16 L18.3546751,15.9931534 C18.7207506,15.943491 19.0029045,15.6296958 19.0029045,15.25 C19.0029045,14.8703042 18.7207506,14.556509 18.3546751,14.5068466 L18.2529045,14.5 Z M19.2388849,5.0207074 C20.7014167,5.0207074 21.8972891,6.162412 21.9838661,7.60318507 L21.9888849,7.7707074 L21.9883291,9.4947074 L2.01032912,9.4947074 L2.01104885,7.7707074 C2.01104885,6.30817556 3.15275345,5.11230312 4.59352652,5.02572619 L4.76104885,5.0207074 L19.2388849,5.0207074 Z"
+                                            id="🎨-Color"></path>
                                     </g>
-                                </svg>
-                            </span>
-                            <p>Payment</p>
-                        </a>
-                        
+                                </g>
+                            </svg>
+                        </span>
+                        <p>Payment</p>
+                    </a>
+
                 </div>
             </div>
         </div>

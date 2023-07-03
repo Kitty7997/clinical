@@ -13,27 +13,38 @@ use Illuminate\Support\Facades\Session;
 
 class AddToCart extends Controller
 {
+
     public function addToCart(Request $request)
     {
+        
         $userId = Auth::user()->id;
         $couponData = Coupon::all();
     
-        $cart = Cart::where('product_id', $request->input('product_id'))
+        $cart = Cart::where('product_id', $request->input('id'))
             ->where('user_id', $userId)
             ->first();
+
+        $item = DB::table('cart')
+        ->select('cart.*','clinical.image','clinical.head','clinical.price')
+        ->where('user_id', $userId->id)
+        ->join('clinical', 'clinical.id', '=', 'cart.product_id')
+        ->get();
     
         if ($cart) {
             $cart->increment('quantity');
         } else {
             $cart = new Cart;
-            $cart->product_id = $request->input('product_id');
+            $cart->product_id = $request->input('id');
             $cart->user_id = $userId;
             // $cart->discount = $discount;
             $cart->save();
         }
+
+        $count = $cart->count();
+        $quantity = $cart->pluck('quantity'); 
     
         $request->session()->put('cart', $cart);
-        return redirect()->back();
+        return response()->json(['count'=> $count, 'countQuantity'=> $quantity, 'cart' => $cart, 'item' => $item]);
     }
     
 
@@ -56,7 +67,7 @@ class AddToCart extends Controller
         $discount = $item->pluck('discount');
         // dd($discount);
         
-          $itemCount = $item->where('user_id',$userId->id)->count();
+         $itemCount = $item->where('user_id',$userId->id)->count();
         }
         // $NewtotalPrice = 0;
         foreach($item as $key=>$value){
@@ -75,8 +86,8 @@ class AddToCart extends Controller
       
         $data = compact('item','clinicaldata','newTotal','cart','itemCount');
 
-
         return view('frontend/cart')->with($data);
+        // return response()->json(['total' => $newTotal]);
     }
 
 
@@ -85,7 +96,7 @@ class AddToCart extends Controller
 
     public function removeData($id){
         $userId = Auth::user()->id;
-        $item = Cart::destroy($id);
+        $itemDelete = Cart::destroy($id);
         $existCode = Coupon::first();
         $cart = Cart::where('user_id', $userId)
         ->get();
@@ -93,7 +104,7 @@ class AddToCart extends Controller
         $discount = $existCode ? $existCode->discount : 0;
         $percentageDiscount = $existCode ? $existCode->percentage : 0;
         // dd($discount);
-
+        $count = $cart->count();
         $newTotal = DB::table('cart')
             ->select('cart.*', 'clinical.image', 'clinical.head', 'clinical.price')
             ->where('user_id', $userId)
@@ -112,7 +123,8 @@ class AddToCart extends Controller
                     Session::forget('percent');
                 } 
             }
-        return redirect()->back(); 
+            $total = $newTotal;
+            return response()->json(['total'=>$newTotal, 'count' => $count]);
     }
 
 
@@ -134,6 +146,11 @@ class AddToCart extends Controller
     $discount = $existCode ? $existCode->discount : 0;
     $percentageDiscount = $existPercentage ? $existPercentage->percentage : 0;
     // dd($percentageDiscount);
+    $item = DB::table('cart')
+    ->select('cart.*','clinical.image','clinical.head','clinical.price')
+    ->where('user_id', $userId)
+    ->join('clinical', 'clinical.id', '=', 'cart.product_id')
+    ->get();
 
     $newTotal = DB::table('cart')
         ->select('cart.*', 'clinical.image', 'clinical.head', 'clinical.price')
@@ -147,7 +164,7 @@ class AddToCart extends Controller
                     $item->discount = $discount;
                     $item->save();
                 }
-                $request->session()->put('code', $myCode);
+                // $request->session()->put('code', $myCode);
 
             } else {
                 Session::flash('error', 'Discount code is not eligible');
@@ -160,7 +177,7 @@ class AddToCart extends Controller
                     $item->percentage = $percentageDiscount;
                     $item->save();
                 }
-                $request->session()->put('percent', $myPercentage);
+                // $request->session()->put('percent', $myPercentage);
 
             } else {
                 Session::flash('error', 'Discount code is not eligible');
@@ -169,13 +186,36 @@ class AddToCart extends Controller
             Session::flash('error', 'Discount code does not exist');
         }
 
+        $cartDiscount = $item->pluck('discount')->first();
+        $cartPercentage = $item->pluck('percentage')->first();
+
+        
+        $finalTotal = $newTotal - $cartDiscount;
+        $finalTotal2 = $newTotal-$newTotal*$cartPercentage/100;
+
+        $totalValue = $cartDiscount ? $finalTotal : $finalTotal2;
+
+        $count = $cart->count();
+        $quantity = $cart->pluck('quantity'); 
+    
+        $request->session()->put('cart', $cart);
+
+        $inputData = $myCode ? $myCode : $myPercentage;
+
+        $totalDiscount = $cartDiscount ? $cartDiscount : $cartPercentage.'%';
+       
+        if($totalDiscount > 1){
+            $btnValue = 'Remove';
+            $myUrl = url('/forget');
+        }else{
+            $btnValue = 'Apply';
+            $myUrl = url('/add_to_cart_again');
+        }
+
     // $request->session()->put('cart', $cart);
-    return redirect()->back();
+    // return response()->json(['code' => $myCode, 'percent' => $myPercentage]);
+    return response()->json(['inputData'=> $inputData, 'btnValue' => $btnValue, 'totalValue' => $totalValue, 'myUrl' => $myUrl, 'totalDiscount' => $totalDiscount ]);
 }
-
-
-
-
 
     public function forgetCart(Request $request){
         $userId = Auth::user()->id;

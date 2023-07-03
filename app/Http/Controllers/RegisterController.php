@@ -87,8 +87,6 @@ class RegisterController extends Controller
         //dd($userData);
         
         
-    //    $abc = Auth::attempt($userData);
-    //    dd($abc);
         if(Auth::attempt($userData)){
             $request->session()->put('userData', $userData);
             return redirect('/');

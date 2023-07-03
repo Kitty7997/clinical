@@ -73,181 +73,165 @@
                 </div>
             @endforeach --}}
 
-                    <div class="main_heading">
-                        <h2>Payment Details</h2>
-                        <p>Select billing address</p>
-                    </div>
-                    <div class="detail_step payment_options">
-                        <div class="left_details">
-                            <input type="radio" id="shipping" name="address_option" value="same">
-                            <label class="payment_select" for="text">Billing Address</label>
-                            <p>save as it to shipping address</p>
-                        </div>
-                    </div>
-                    <p class="or_text">or</p>
-                    <div class="Address_button">
-                        <button id="addAddress" type="button">{{ $title }}</button>
-                    </div>
-                    <div id="newAddress">
-                        <form class="address_form" action="{{ $url }}" method="post">
-                            @csrf
-                            <p class="new_address_text">{{ $title }}</p>
-                            <div class="inner_name">
-                                <label class="form_label" for="fname">First name
-                                    <input type="text" id="fname" name="fname"
-                                        value="@if (isset($billDataNew)) {{ $billDataNew->fname }} @endif"></label>
-                                <span class="text-danger">
-                                    @error('fname')
-                                        {{ $message }}
-                                    @enderror
-                                </span>
-                                <label class="form_label" for="lname">Last name *
-                                    <input type="text" id="lname" name="lname"
-                                        value="@if (isset($billDataNew)) {{ $billDataNew->lname }} @endif"></label>
-                                <span class="text-danger">
-                                    @error('lname')
-                                        {{ $message }}
-                                    @enderror
-                                </span>
-                            </div>
-                            <div class="inner_name">
-                                <label class="form_label" for="number">Mobile number *
-                                    <input type="number" id="number" name="number"
-                                        value="@if (isset($billDataNew)) {{ $billDataNew->number }} @endif"></label>
-                                <span class="text-danger">
-                                    @error('number')
-                                        {{ $message }}
-                                    @enderror
-                                </span>
-                                <label class="form_label" for="email">Email address
-                                    <input type="email" id="email" name="email"
-                                        value="@if (isset($billDataNew)) {{ $billDataNew->email }} @endif"></label>
-                                <span class="text-danger">
-                                    @error('email')
-                                        {{ $message }}
-                                    @enderror
-                                </span>
-                            </div>
-                            <div class="assesment_button">
-                                <button id="" class="button">Save</button>
-                                <button id="cancel" class="bg_brown" type="button">Cancel</button>
-                            </div>
-                        </form>
-                    </div>
-
-                    @if ($deliveryData->isEmpty())
-                        <div class="order_box mt-5">
-                            <div class="order_img">
-                                <img src="../images/order-icon.png">
-                            </div>
-                            <h2 class="order_subHeading">Please enter delivery address first to continue</h2>
-                            <p class="order_text_bottom">Enjoy the shopping journey with us!</p>
-                            <a href="{{ url('/delivery') }}">
-                                <div class="get_started">
-                                    <button id="" class="bg_brown" type="button">Enter Delivery
-                                        Address</button>
-                                </div>
-                            </a>
-                        </div>
-                    @else
-                        <div class="seprater_cart"></div>
+                    <div id="main_payment">
                         <div class="main_heading">
-                            <p>Payment method</p>
+                            <h2>Payment Details</h2>
+                            <p>Select billing address</p>
                         </div>
-
-                        <div id="payment1" class="payment_options">
-                            <div id="googlePay" class="options_step">
-                                <input type="radio" id="shipping" name="fav_language" value="Google Pay">
-                                <label class="payment_select" for="text">Google Pay</label>
-                            </div>
-                            <div class="pay_with">
-                                <img src="../images/Apple_Pay.svg">
+                        <div class="detail_step payment_options">
+                            <div class="left_details">
+                                <input type="radio" id="shipping" name="address_option" value="same">
+                                <label class="payment_select" for="text">Billing Address</label>
+                                <p>save as it to shipping address</p>
                             </div>
                         </div>
-                        <div class="assesment_button">
-                            <button id="Gpay" class="gpay-btn bg_brown" type="button">Proceed with Google
-                                Pay</button>
+                        <p class="or_text">or</p>
+                        <div class="Address_button">
+                            <button id="addAddress" type="button">{{ $title }}</button>
                         </div>
-                        <div id="payment2" class="payment_options">
-                            <div id="applePay" class="options_step">
-                                <input type="radio" id="shipping" name="fav_language" value="Apple Pay">
-                                <label class="payment_select" for="text">Apple Pay</label>
+                        <div id="newAddress">
+                            <form class="address_form" action="{{ $url }}" method="post">
+                                @csrf
+                                <p class="new_address_text">{{ $title }}</p>
+                                <div class="inner_name">
+                                    <label class="form_label" for="fname">First name
+                                        <input type="text" id="fname" name="fname"
+                                            value="@if (isset($billDataNew)) {{ $billDataNew->fname }} @endif"></label>
+                                    <span class="text-danger">
+                                        @error('fname')
+                                            {{ $message }}
+                                        @enderror
+                                    </span>
+                                    <label class="form_label" for="lname">Last name *
+                                        <input type="text" id="lname" name="lname"
+                                            value="@if (isset($billDataNew)) {{ $billDataNew->lname }} @endif"></label>
+                                    <span class="text-danger">
+                                        @error('lname')
+                                            {{ $message }}
+                                        @enderror
+                                    </span>
+                                </div>
+                                <div class="inner_name">
+                                    <label class="form_label" for="number">Mobile number *
+                                        <input type="number" id="number" name="number"
+                                            value="@if (isset($billDataNew)) {{ $billDataNew->number }} @endif"></label>
+                                    <span class="text-danger">
+                                        @error('number')
+                                            {{ $message }}
+                                        @enderror
+                                    </span>
+                                    <label class="form_label" for="email">Email address
+                                        <input type="email" id="email" name="email"
+                                            value="@if (isset($billDataNew)) {{ $billDataNew->email }} @endif"></label>
+                                    <span class="text-danger">
+                                        @error('email')
+                                            {{ $message }}
+                                        @enderror
+                                    </span>
+                                </div>
+                                <div class="assesment_button">
+                                    <button id="" class="button">Save</button>
+                                    <button id="cancel" class="bg_brown" type="button">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+    
+                        @if ($deliveryData->isEmpty())
+                            <div class="order_box mt-5">
+                                <div class="order_img">
+                                    <img src="../images/order-icon.png">
+                                </div>
+                                <h2 class="order_subHeading">Please enter delivery address first to continue</h2>
+                                <p class="order_text_bottom">Enjoy the shopping journey with us!</p>
+                                <a href="{{ url('/delivery') }}">
+                                    <div class="get_started">
+                                        <button id="" class="bg_brown" type="button">Enter Delivery
+                                            Address</button>
+                                    </div>
+                                </a>
                             </div>
-                            <div class="pay_with">
-                                <img src="../images/Apple_Pay.svg">
+                        @else
+                            <div class="seprater_cart"></div>
+                            <div class="main_heading">
+                                <p>Payment method</p>
                             </div>
-                        </div>
-                        <div class="assesment_button">
-                            <button id="Apple" class="gpay-btn bg_brown" type="button">Proceed with Apple
-                                Pay</button>
-                        </div>
-                        <div id="payment3" class="payment_options">
-                            <div id="payPal" class="options_step">
-                                <input type="radio" id="shipping" checked="checked" name="fav_language"
-                                    value="Paypal">
-                                <label class="payment_select" for="text">Paypal</label>
-                            </div>
-                            <div class="pay_with">
-                                <img src="../images/PayPal.png">
-                            </div>
-                        </div>
-                        {{-- <a href="{{url('/paymenthandle')}}" class="text-decorate"> --}}
-                        <div class="assesment_button">
-                            <button id="Paypal" class="gpay-btn bg_brown" type="button">Proceed with
-                                Paypal</button>
-                        </div>
-                        {{-- </a> --}}
-                        <div id="payment4" class="payment_options">
-                            <div id="zipPay" class="options_step">
-                                <input type="radio" id="shipping" name="fav_language" value="Zip">
-                                <label class="payment_select" for="text">Zip</label>
-                                <p>Pay £56.00 in 4 months installments</p>
-                            </div>
-                            <div class="pay_with">
-                                <img src="../images/Apple_Pay.svg">
-                            </div>
-                        </div>
-
-                        <div class="assesment_button">
-                            <button id="Zip" class="gpay-btn bg_brown" type="button">Proceed with Zip</button>
-                        </div>
-
-
-                        <a href="{{ url('/stripe') }}" class="text-decorate">
-                            <div id="payment5" class="payment_options">
-                                <div id="creditPay" class="options_step">
-                                    <input type="radio" id="shipping" name="fav_language" value="Credit card">
-                                    <label class="payment_select" for="text">Credit card</label>
+    
+                            <div id="payment1" class="payment_options">
+                                <div id="googlePay" class="options_step">
+                                    <input type="radio" id="shipping" name="fav_language" value="Google Pay">
+                                    <label class="payment_select" for="text">Google Pay</label>
                                 </div>
                                 <div class="pay_with">
-                                    <img src="../images/Visa-logo.png">
-                                    <img class="master_card" src="../images/Mastercard-logo.png">
-                                    <img class="american_express" src="../images/american-express.png">
+                                    <img src="../images/Apple_Pay.svg">
                                 </div>
                             </div>
-                        </a>
-                    @endif
-
-
-                    {{-- <form id="crediCard" class="crediCard_form">
-                <label class="form_label" for="number">Card Number
-                    <input placeholder="Enter card number" type="number" id="number"></label>
-                <div class="inner_name">
-                    <label class="form_label" for="lname">Expiry Date
-                        <input type="date" id="start" name="trip-start" value="2025-12-26"
-                            min="2025-01-01" max="2025-12-31">
-                    </label>
-                    <label class="form_label" for="number">CVC
-                        <input placeholder="CVC" type="number" id="number"></label>
-                </div>
-            </form> --}}
-
-                    {{-- <div class="assesment_button">
-                <button type="button">Continue</button>
-            </div> --}}
-                </div>
+                            <div class="assesment_button">
+                                <button id="Gpay" class="gpay-btn bg_brown" type="button">Proceed with Google
+                                    Pay</button>
+                            </div>
+                            <div id="payment2" class="payment_options">
+                                <div id="applePay" class="options_step">
+                                    <input type="radio" id="shipping" name="fav_language" value="Apple Pay">
+                                    <label class="payment_select" for="text">Apple Pay</label>
+                                </div>
+                                <div class="pay_with">
+                                    <img src="../images/Apple_Pay.svg">
+                                </div>
+                            </div>
+                            <div class="assesment_button">
+                                <button id="Apple" class="gpay-btn bg_brown" type="button">Proceed with Apple
+                                    Pay</button>
+                            </div>
+                            <div id="payment3" class="payment_options">
+                                <div id="payPal" class="options_step">
+                                    <input type="radio" id="shipping" checked="checked" name="fav_language"
+                                        value="Paypal">
+                                    <label class="payment_select" for="text">Paypal</label>
+                                </div>
+                                <div class="pay_with">
+                                    <img src="../images/PayPal.png">
+                                </div>
+                            </div>
+                            {{-- <a href="{{url('/paymenthandle')}}" class="text-decorate"> --}}
+                            <div class="assesment_button">
+                                <button id="Paypal" class="gpay-btn bg_brown" type="button">Proceed with
+                                    Paypal</button>
+                            </div>
+                            {{-- </a> --}}
+                            <div id="payment4" class="payment_options">
+                                <div id="zipPay" class="options_step">
+                                    <input type="radio" id="shipping" name="fav_language" value="Zip">
+                                    <label class="payment_select" for="text">Zip</label>
+                                    <p>Pay £56.00 in 4 months installments</p>
+                                </div>
+                                <div class="pay_with">
+                                    <img src="../images/Apple_Pay.svg">
+                                </div>
+                            </div>
+    
+                            <div class="assesment_button">
+                                <button id="Zip" class="gpay-btn bg_brown" type="button">Proceed with Zip</button>
+                            </div>
+    
+    
+                            <a href="{{ url('/stripe') }}" class="text-decorate">
+                                <div id="payment5" class="payment_options">
+                                    <div id="creditPay" class="options_step">
+                                        <input type="radio" id="shipping" name="fav_language" value="Credit card">
+                                        <label class="payment_select" for="text">Credit card</label>
+                                    </div>
+                                    <div class="pay_with">
+                                        <img src="../images/Visa-logo.png">
+                                        <img class="master_card" src="../images/Mastercard-logo.png">
+                                        <img class="american_express" src="../images/american-express.png">
+                                    </div>
+                                </div>
+                            </a>
+                        @endif
+                    </div>
+                    </div>
             @else
-                <div class="order_box">
+                <div class="order_box" id="payment_box">
                     <div class="order_img">
                         <img src="../images/order-icon.png">
                     </div>
@@ -264,7 +248,7 @@
                 <div class="payment_right">
                     <p class="order">Your order</p>
                     @foreach ($item as $data)
-                        <div class="hormone_test">
+                        <div class="hormone_test" id="delete{{ $data->id }}">
                             <div class="step_left">
                                 <img src="{{ $data->image }}">
                             </div>
@@ -278,7 +262,7 @@
                             </div>
 
                             <div class="step_right">
-                                <a href="{{ url('/remove') }}/{{ $data->id }}">
+                                <a onclick="removeItem('{{ $data->id }}')">
                                     <img class="cross_white" src="../images/cross_white.svg">
                                 </a>
                             </div>
@@ -299,8 +283,7 @@
                                 </div>
                             @endif
                         </div>
-                        <form action="{{ $myUrl }}" method="post">
-                            @csrf
+                        <form id="form">    
                             <div class="order_receipt">
                                 <div class="code_input">
                                     <input type="text" id="quantity" name="code"
@@ -311,8 +294,8 @@
                                         <p class="ms-3">TEJENDER</p>
                                     </div>
                                 </div>
-                                <div class="code_button">
-                                    <input class="submit_button" value="{{ $btnValue }}" type="submit"
+                                <div class="code_button" onclick="applyCoupon()">
+                                    <input class="submit_button" id="btn_value" value="{{ $btnValue }}" type="submit"
                                         id="coupon-button">
                                 </div>
                             </div>
@@ -322,12 +305,12 @@
                     <div class="receipt">
                         <div class="order_receipt">
                             <p>Item</p>
-                            <p>{{ count($item) }}</p>
+                            <p id="paymentcartCount">{{$itemCount}}</p>
                         </div>
                         @if ($inputData)
                             <div class="order_receipt">
                                 <p style="color: #fa4446;">Discount</p>
-                                <p style="color: #fa4446;">-£{{ $totalDiscount }}</p>
+                                <p id="my_discount" style="color: #fa4446;">-£{{ $totalDiscount }}</p>
                             </div>
                         @else
                         @endif
@@ -338,10 +321,10 @@
                         <div class="order_receipt">
                             <h2>Total</h2>
                             <span>
-                                <p style="font-size: 45px; font-weight: 500; text-align: right;">
-                                    
+                                <p style="font-size: 45px; font-weight: 500; text-align: right;" id="amount">
+
                                     £{{ $totalValue }}.00
-                        
+
                                 </p>
                                 <p style="font-size: font-size: 17px;"></p>
                             </span>
@@ -435,4 +418,58 @@
                 $(this).addClass("active");
             });
     });
+
+    function removeItem(id){
+        var url = `{{ url('/remove/') }}/${id}`;
+      
+       var csrfToken = '{{ csrf_token() }}';
+       var data = {
+            id : id,
+            _token: csrfToken
+        };
+        $.ajax({
+            type: 'GET',
+            url: url,
+            data: data,
+            success: function(result) {
+				if (result.count < 1) {
+					$('#cartCount').removeClass('cart_style');
+					$('#cartCount').empty();
+					$('#paymentcartCount').text(result.count);
+                    $('#payment_box').show();
+                    $('#main_payment').hide();
+				}else{
+					$('#cartCount').text(result.count);
+				    $('#paymentcartCount').text(result.count);
+                    $('#payment_box').hide();
+                    $('#main_payment').show();
+				}
+                $('#delete' + id).remove();
+				$('#amount').text('£' + result.total + '.00');
+            }
+        });
+    }
+
+    function applyCoupon() {
+        var csrfToken = '{{ csrf_token() }}';
+        var url = '{{$myUrl}}';
+      
+        var data = {
+            _token : csrfToken
+        };
+        
+        $.ajax({
+            type : 'POST',
+            url : url,
+            data : data,
+            success: function(result){
+                console.log(result.totalDiscount);
+                $('#btn_value').text(result.btnValue);
+                $('#amount').text(result.totalValue);
+                $('#quantity').text(result.inputData);
+                $('#form').text(result.myUrl);
+                $('#my_discount').text(result.totalDiscount);
+            }
+        });
+    }
 </script>

@@ -100,11 +100,11 @@ class PaymentController extends Controller
         return redirect()->back();
     }
 
-    public function paymentEditController($id){
+    public function paymentEditController($id, Request $request){
         $userId = Auth::user()->id;
         $deliveryData = Delivery::where('user_id',$userId)->get();
         // $coupon = Coupon::where('user_id', $userId)->get();
-        $billData = Bill::where('user_id', $userId)->orderBy('created_at','desc')-first();
+        $billData = Bill::where('user_id', $userId)->orderBy('created_at','desc')->first();
         $title = 'Update account here';
         $billDataNew = Bill::find($id);
         $cart = Cart::where('product_id', $request->input('product_id'))

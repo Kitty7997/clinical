@@ -40,4 +40,5 @@ class AddonController extends Controller
         $data = compact('item','clinicaldata','newTotal','itemCount');
         return view('frontend/addons')->with($data);
     }
+
 }
