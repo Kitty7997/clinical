@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ClinicalRoute;
-use App\Http\Controllers\AddToCart;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\AddonController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\DeliveryController;
@@ -29,11 +29,11 @@ use App\Http\Controllers\CouponController;
     
 
     // Cart routes
-    Route::get('/cart',[AddToCart::class,'viewCart'])->name('cart');
-    Route::post('/add_to_cart',[AddToCart::class,'addTocart']);
-    Route::post('/add_to_cart_again',[AddToCart::class,'addToCartAgain'])->name('add_to_cart_again');
-    Route::get('/remove/{id}', [AddToCart::class, 'removeData'])->name('remove/{id}');
-    Route::post('/forget',[AddToCart::class,'forgetCart']);
+    Route::get('/cart',[CartController::class,'viewCart'])->name('cart');
+    Route::post('/add_to_cart',[CartController::class,'addTocart']);
+    Route::post('/apply_coupon',[CartController::class,'applyCoupon'])->name('apply_coupon');
+    Route::get('/remove/{id}', [CartController::class, 'removeData'])->name('remove/{id}');
+    Route::post('/forget',[CartController::class,'forgetCart']);
 
     // Delivery routes
     Route::get('/delivery',[DeliveryController::class,'dealControl'])->name('delivery');
@@ -65,9 +65,8 @@ use App\Http\Controllers\CouponController;
 
 });
 
-    Route::get('/',[ClinicalRoute::class,'ClinicalRoute'])->name('/');
-    route::get('/header',[AddToCart::class,'header']);
-
+    Route::get('/',[ProductController::class,'ClinicalRoute'])->name('/');
+    
     // Account routes
     Route::get('/register',[RegisterController::class,'accountPage'])->name('register');
     Route::post('/postregister',[RegisterController::class,'postLogin'])->name('postregister');

@@ -6,18 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Models\Cart;
-use App\Models\User;
 use App\Models\Orders;
-use App\Models\Coupon;
-use App\Models\Price;
-use App\Models\Bill;
 use App\Models\Delivery;
 use Illuminate\Support\Facades\DB;
 use Stripe\Stripe;
 use Stripe\PaymentMethod;
 use Stripe\PaymentIntent;
-use Stripe\Exception\CardException;
-use Illuminate\Support\Facades\env;
      
 class StripePaymentController extends Controller
 {
@@ -29,20 +23,11 @@ class StripePaymentController extends Controller
     public function stripe()
     {   $userId = Auth::user();
         
-        $item = DB::table('cart')
-        ->select('cart.*','clinical.image','clinical.head','clinical.price')
-        ->where('user_id', $userId->id)
-        ->join('clinical', 'clinical.id', '=', 'cart.product_id')
-        ->get();
-        // dd($item);
+        $item = (new Cart())->cartData();
+        
+        $itemCount = $item->where('user_id',$userId->id)->count();
     
-      $itemCount = $item->where('user_id',$userId->id)->count();
-    
-        $total = DB::table('cart')
-        ->select('cart.*','clinical.image','clinical.head','clinical.price')
-        ->where('user_id',$userId->id)
-        ->join('clinical', 'clinical.id', '=', 'cart.product_id')
-        ->sum(DB::raw('clinical.price * cart.quantity'));
+        $total = $item->sum('totalPrice');
         $data = compact('item','total');
         return view('frontend/stripe')->with($data);
     }
@@ -50,37 +35,23 @@ class StripePaymentController extends Controller
     
     public function stripePost(Request $request)
     {
-        try {
             Stripe::setApiKey(env('STRIPE_SECRET'));
     
             $userId = Auth::user()->id;
-            $cart = Cart::where('user_id', $userId)->get();
+
+            $items = (new Cart())->cartData();
+
+            $newTotal = $items->sum('totalPrice');
     
-            $newTotal = DB::table('cart')
-                ->select('cart.*', 'clinical.image', 'clinical.head', 'clinical.price')
-                ->where('user_id', $userId)
-                ->join('clinical', 'clinical.id', '=', 'cart.product_id')
-                ->sum(DB::raw('clinical.price * cart.quantity'));
+            // $cartDiscount = $items->pluck('discount')->first();
+            // $cartPercentage = $items->pluck('percentage')->first();
     
-            $items = DB::table('cart')
-                ->select('cart.*', 'clinical.image', 'clinical.head', 'clinical.price')
-                ->where('user_id', $userId)
-                ->join('clinical', 'clinical.id', '=', 'cart.product_id')
-                ->get();
+            // $finalTotal = $newTotal - $cartDiscount;
+            // $finalTotal2 = $newTotal - ($newTotal * $cartPercentage / 100);
     
-            $cartDiscount = $items->pluck('discount')->first();
-            $cartPercentage = $items->pluck('percentage')->first();
-    
-            $finalTotal = $newTotal - $cartDiscount;
-            $finalTotal2 = $newTotal - ($newTotal * $cartPercentage / 100);
-    
-            $totalValue = $cartDiscount ? $finalTotal : $finalTotal2;
-            $totalDiscount = $cartDiscount ? $cartDiscount : $cartPercentage;
-    
-            foreach ($items as $item) {
-                $item->totalPrice = $item->price * $item->quantity;
-            }
-    
+            // $totalValue = $cartDiscount ? $finalTotal : $finalTotal2;
+            // $totalDiscount = $cartDiscount ? $cartDiscount : $cartPercentage;
+
             $address = Delivery::where('user_id', $userId)->first();
     
             if ($request->has('stripeToken')) {
@@ -123,8 +94,8 @@ class StripePaymentController extends Controller
                         $order->product_head = $product->head;
                         $order->quantity = $product->quantity;
                         $order->total = $product->totalPrice;
-                        $order->discount = $totalDiscount;
-                        $order->paid_amount = $totalValue;
+                        $order->discount = 35;
+                        $order->paid_amount = 263;
                         $order->address = json_encode($paymentIntent->shipping->address->city);
                         $order->save();
                     }
@@ -141,9 +112,6 @@ class StripePaymentController extends Controller
                 Session::flash('error', 'No payment method provided. Your order has been cancelled.');
                 return redirect('/cart');
             }
-        } catch (Exception $e) {
-            return response()->json(['error' => 'An error occurred during payment. Please try again.']);
-        }
     }
     
     

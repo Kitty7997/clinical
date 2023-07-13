@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('user_id');
             $table->integer('quantity')->default(1);
             $table->integer('discount')->default('0');
-            $table->integer('percentage')->default('0');
+            $table->string('voucher')->default('');
             $table->timestamps();
         });
     }

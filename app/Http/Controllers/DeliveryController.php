@@ -3,67 +3,55 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Models\Cart;
 use App\Models\Delivery;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Coupon;
 
 class DeliveryController extends Controller
 {
-    public function dealControl(Request $request){
-        $userId = Auth::user()->id;
-        $deliveryData = Delivery::where('user_id', $userId)->orderBy('created_at','desc')->first();
-        // dd($deliveryData);
-        $url = url('/postdelivery');
-        
-          $item = DB::table('cart')
-          ->select('cart.*','clinical.image','clinical.head','clinical.price')
-          ->where('user_id', $userId)
-          ->join('clinical', 'clinical.id', '=', 'cart.product_id')
-          ->get();
-          // dd($item);
+    public function dealControl(Request $request)
+{
+    $cart = (new Cart())->cartData();
 
-          $cartDiscount = $item->pluck('discount')->first();
-          $cartPercentage = $item->pluck('percentage')->first();
-        
-          $itemCount = $item->where('user_id',$userId)->count();
-        
-
-        // $NewtotalPrice = 0;
-        foreach($item as $key=>$value){
-            $item[$key]->totalPrice=$value->price * $value->quantity;
-            // $NewtotalPrice = $NewtotalPrice + $item[$key]->totalPrice;
-        }
-
-        $newTotal = DB::table('cart')
-        ->select('cart.*','clinical.image','clinical.head','clinical.price')
-        ->where('user_id', $userId)
-        ->join('clinical', 'clinical.id', '=', 'cart.product_id')
-        ->sum(DB::raw('clinical.price * cart.quantity'));
-       
-        $finalTotal = $newTotal - $cartDiscount;
-        $finalTotal2 = $newTotal-$newTotal*$cartPercentage/100;
-
-        $totalValue = $cartDiscount ? $finalTotal : $finalTotal2;
-
-        $codeValue = $request->session()->get('code');
-        $percentValue = $request->session()->get('percent');
-
-        $inputData = $codeValue ? $codeValue : $percentValue;
-
-        $totalDiscount = $cartDiscount ? $cartDiscount : $cartPercentage.'%';
-        // dd($codeValue);
-        if($totalDiscount > 1){
-            $btnValue = 'Remove';
-            $myUrl = url('/forget');
-        }else{
-            $btnValue = 'Apply';
-            $myUrl = url('/add_to_cart_again');
-        }
-
-        $data = compact('item','newTotal','deliveryData','url','itemCount','codeValue','myUrl','btnValue','finalTotal','cartDiscount','totalValue','inputData','totalDiscount');
-        return view('frontend/delivery')->with($data);
+    if ($cart->isEmpty()) {
+        return redirect('/');
     }
+    
+    $userId = Auth::user()->id;
+
+    $overallTotal = $cart->sum('totalPrice');
+
+    $couponCode = $cart[0]->voucher;
+    
+    if($couponCode){
+        $coupon = (new Coupon())->getCoupon($couponCode);
+
+        $totalAmount = $coupon['totalValue'];
+
+        $couponDiscount = $coupon['discount'];
+
+        $btnValue = 'Remove';
+        $myUrl = url('/forget');
+    }else{
+        $totalAmount = $overallTotal;
+        $couponDiscount = 0;
+
+        $btnValue = 'Apply';
+        $myUrl = url('/apply_coupon');
+    }
+
+    $deliveryData = Delivery::where('user_id', $userId)->orderBy('created_at', 'desc')->first();
+
+    $url = url('/postdelivery');
+
+    $itemCount = $cart->where('user_id', $userId)->count();
+
+    $data = compact('cart', 'deliveryData', 'url', 'itemCount','totalAmount','myUrl','couponDiscount');
+
+    return view('frontend.delivery', $data);
+}
+
 
     public function addData(Request $request){
         $request->validate([
@@ -89,12 +77,9 @@ class DeliveryController extends Controller
             $delivery->city = $request->input('city');
             $delivery->country = $request->input('country');
             $delivery->postcode = $request->input('postcode');
-          
+            
             $delivery->save();
-            // $request->session()->put('addressData', $delivery);
-        
-
-        return redirect('/payment');
+         return redirect('/payment');
     }
     
 
@@ -103,37 +88,46 @@ class DeliveryController extends Controller
         return redirect()->back();
     }
 
+
     public function editData($id){
         $userId = Auth::user()->id;
-       $deliveryData = Delivery::where('user_id', $userId)->orderBy('created_at','desc')->first();
-       $editData = Delivery::find($id);
-       
-       $url = url('/update').'/'. $id;
-       
-        $item = DB::table('cart')
-        ->select('cart.*','clinical.image','clinical.head','clinical.price')
-        ->where('user_id', $userId)
-        ->join('clinical', 'clinical.id', '=', 'cart.product_id')
-        ->get();
-        // dd($item);
-    
-      $itemCount = $item->where('user_id',$userId)->count();
-    
 
-        foreach($item as $key=>$value){
-            $item[$key]->totalPrice=$value->price * $value->quantity;
+        $deliveryData = Delivery::where('user_id', $userId)->orderBy('created_at','desc')->first();
+
+        $editData = Delivery::find($id);
+
+        $cart = (new Cart())->cartData();
+
+        $overallTotal = $cart->sum('totalPrice');
+
+        $couponCode = $cart[0]->voucher;
+    
+        if($couponCode){
+            $coupon = (new Coupon())->getCoupon($couponCode);
+    
+            $totalAmount = $coupon['totalValue'];
+    
+            $couponDiscount = $coupon['discount'];
+    
+            $btnValue = 'Remove';
+            $myUrl = url('/forget');
+        }else{
+            $totalAmount = $overallTotal;
+            $couponDiscount = 0;
+    
+            $btnValue = 'Apply';
+            $myUrl = url('/apply_coupon');
         }
-
-        $newTotal = DB::table('cart')
-        ->select('cart.*','clinical.image','clinical.head','clinical.price')
-        ->where('user_id', $userId)
-        ->join('clinical', 'clinical.id', '=', 'cart.product_id')
-        ->sum(DB::raw('clinical.price * cart.quantity'));
+       
+        $url = url('/update').'/'. $id;
+    
+        $itemCount = $cart->where('user_id',$userId)->count();
 
 
-       $data = compact('url','item','newTotal','editData','deliveryData','itemCount');
+       $data = compact('url','cart','overallTotal','editData','deliveryData','itemCount','totalAmount','myUrl','couponDiscount');
        return view('frontend/delivery')->with($data);
     }
+
 
     public function updateData($id, Request $request){
         $userId = Auth::user()->id;
@@ -150,11 +144,5 @@ class DeliveryController extends Controller
         $updateData->save();
         return redirect('/delivery');
     }
-
-    // public function continueData($id, Request $request){
-    //     $continueData = Delivery::find($id); 
-    //     $data = compact('continueData');
-    //     return redirect('/payment')->with($data);
-    // }
 
 }

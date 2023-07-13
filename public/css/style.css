@@ -22,6 +22,11 @@
     padding-right: 10px;
     margin: 0 auto;
 }
+
+.assesment_button {
+    text-align: center;
+}
+
 body{
 	margin: 0;
 }
@@ -56,6 +61,10 @@ body{
 
 .my-btn{
     display: flex;
+}
+
+.code_text{
+    color: #fff;
 }
 
 .right_button_edit{

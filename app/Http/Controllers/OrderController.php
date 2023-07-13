@@ -12,21 +12,20 @@ class OrderController extends Controller
 {
     public function orderNow(){
        $userId = Auth::user()->id;
+       
        $order = Orders::where('user_id',$userId)->orderBy('created_at','desc')->get();
-    //    dd($order);
-
-        $item = DB::table('cart')
-        ->select('cart.*','clinical.image','clinical.head','clinical.price')
-        ->where('user_id', $userId)
-        ->join('clinical', 'clinical.id', '=', 'cart.product_id')
-        ->get();
+   
+        $item = (new Cart())->cartData();
     
-      $itemCount = $item->where('user_id',$userId)->count();
-    
+         $itemCount = $item->where('user_id',$userId)->count();
+        
+         $orderCount = $order->count();
 
-        $data = compact('item','itemCount','order');
+        $data = compact('item','itemCount','order','orderCount');
         return view('frontend/order')->with($data);
     }
+
+
 
     public function removeorder($id){
         $userId = Auth::user()->id;

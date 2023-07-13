@@ -7,7 +7,7 @@
     margin-left: auto;
 }
 .payment_sec {
-    padding: 3rem 0;
+    padding: 2rem 0;
 }
 .payment_inner {
     display: flex;
@@ -150,7 +150,7 @@ svg.green_tick {
 }
 .payment_top{
 	flex: 35%;
-    max-width: 35%;
+    max-width: 100%;
 }
 .payment_right {
     background: #4b383b;
@@ -256,7 +256,7 @@ p.code_text {
     padding-top: 20px;
     margin-top: 20px;
 }
-.code_input input#quantity {
+.code_input input#discount {
     width: 235px;
     height: 42px;
     text-indent: 10px;
@@ -273,6 +273,7 @@ input.submit_button {
     height: 42px;
     cursor: pointer;
     font-size: 15px;
+    margin-left: 15px;
 }
 .code_input {
     position: relative;
@@ -282,9 +283,16 @@ input.submit_button {
     padding: 5px 10px;
     border-radius: 16px;
     font-size: 12px !important;
-    /* width: 106px; */
     margin-top: 10px !important;
 }
 .discount_code .order_receipt:nth-child(2){
 	align-items: baseline;
+}
+
+#billing_details{
+    display: none;
+}
+
+#shipping{
+    cursor: pointer;
 }

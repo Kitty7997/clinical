@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('code');
             $table->integer('discount');
-            $table->string('coupon');
-            $table->string('percentage');
+            $table->string('type');
             $table->timestamps();
         });
     }

@@ -17,10 +17,16 @@ class CouponSeeder extends Seeder
     {
        
         DB::table('coupon')->insert([
+            [
             'code' => 'HERTILITYHEALTH',
             'discount' => 35,
-            'coupon' => 'TEJENDER',
-            'percentage' => 10,
+            'type' => 'amount',
+            ],
+            [
+            'code' => 'TEJENDER',
+            'discount' => 10,
+            'type' => 'percentage',
+            ]
 
         ]);
     }

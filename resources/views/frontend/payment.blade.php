@@ -16,29 +16,58 @@
 
 <section class="payment_sec">
     <div class="container_payment">
-        <div class="payment_inner">
-            @if ($newTotal)
-                <div class="payment_details">
-                    @if (!$billData)
+        <div class="payment_inner" id="payment_flex" @if($totalAmount < 1) style="display: unset" @else style="display: flex" @endif>
+           
+            <div class="payment_details" id="payment_address" @if($totalAmount < 1) style="display: none" @else style="display: block" @endif>
+
+
+                <div id="main_payment">
+                    <div class="main_heading">
+                        <h2>Payment Details</h2>
+                        <p>Select billing address</p>
+                    </div>
+                    <div class="detail_step payment_options">
+                        <div class="left_details">
+                            <input type="radio" id="shipping" name="address_option" value="same" onclick="showData()">
+                            <label class="payment_select" for="text">Billing Address</label>
+                            <p>save as it to shipping address</p>
+                        </div>
+                    </div>
+                   {{-- <div id="billing_details">
+                    <div class="detail_step">
+                        <div class="left_details">
+                            <h4><svg class="green_tick" width="13" height="11" viewBox="0 0 13 11" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M11.7385 1.8468L4.60555 9.01551L1.03906 5.43116" stroke="#FBF9F8"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg> Billing Address</h4>
+                            <p>{{ $deliveryData[0]->fname }}</p>
+                            <p>{{ $deliveryData[0]->phone }}</p>
+                            <p>{{ $deliveryData[0]->city }}</p>
+                        </div>
+                       </div>
+                   </div> --}}
+
+                   @if (!$billData)
                     @else
-                        <div class="detail_step">
+                        <div class="detail_step" id="delivery_id{{ $billData->id }}">
                             <div class="left_details">
                                 <h4><svg class="green_tick" width="13" height="11" viewBox="0 0 13 11"
                                         fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M11.7385 1.8468L4.60555 9.01551L1.03906 5.43116" stroke="#FBF9F8"
                                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg> Account Details</h4>
-                                <p>{{ $billData->fname }} {{ $billData->lname }}</p>
-                                <p>{{ $billData->number }}</p>
-                                <p>{{ $billData->email }}</p>
+                                    </svg> Billing addresss</h4>
+                                <p id="bill_fname">{{ $billData->fname }} {{ $billData->lname }}</p>
+                                <p id="bill_number">{{ $billData->number }}</p>
+                                <p id="bill_email">{{ $billData->email }}</p>
                             </div>
                             <div class="my-btn">
-                                <a href="{{ url('/billedit') }}/{{ $billData->id }}">
+                                {{-- <a href="{{ url('/billedit') }}/{{ $billData->id }}">
                                     <div class="right_button_edit">
                                         <button id="editBtn" type="button">Edit</button>
                                     </div>
-                                </a>
-                                <a href="{{ url('/deletebill') }}/{{ $billData->id }}">
+                                </a> --}}
+                                <a onclick="deleteItem('{{$billData->id}}')" >
                                     <div class="right_button_edit">
                                         <button class="button">Remove</button>
                                     </div>
@@ -46,192 +75,160 @@
                             </div>
                         </div>
                     @endif
-                    {{-- @foreach ($deliveryData as $data)
-                <div class="detail_step">
-                    <div class="left_details">
-                        <h4><svg class="green_tick" width="13" height="11" viewBox="0 0 13 11" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path d="M11.7385 1.8468L4.60555 9.01551L1.03906 5.43116" stroke="#FBF9F8"
-                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>Delivery Address</h4>
-                        <p>{{ $data->fname }} {{ $data->lname }}</p>
-                        <p>{{ $data->phone }}</p>
-                        <p>{{ $data->city }}</p>
+                    <p class="or_text">or</p>
+                    <div class="Address_button">
+                        <button id="addAddress" type="button">{{ $title }}</button>
                     </div>
-                    <div class="my-btn">
-                        <a href="{{ url('/edit') }}/{{ $data->id }}">
-                            <div class="right_button_edit">
-                                <button id="editBtnDelivery" class="button">Edit</button>
+                    <div id="newAddress">
+                        <div class="address_form" id="bill">
+                            <p class="new_address_text">{{ $title }}</p>
+                            <div class="inner_name">
+                                <label class="form_label" for="fname">First name
+                                    <input type="text" id="fname" name="fname"
+                                        value="@if (isset($billDataNew)) {{ $billDataNew->fname }} @endif"></label>
+                                <span class="text-danger">
+                                    @error('fname')
+                                        {{ $message }}
+                                    @enderror
+                                </span>
+                                <label class="form_label" for="lname">Last name *
+                                    <input type="text" id="lname" name="lname"
+                                        value="@if (isset($billDataNew)) {{ $billDataNew->lname }} @endif"></label>
+                                <span class="text-danger">
+                                    @error('lname')
+                                        {{ $message }}
+                                    @enderror
+                                </span>
                             </div>
-                        </a>
-                        <a href="{{ url('/delete') }}/{{ $data->id }}">
-                            <div class="right_button_edit">
-                                <button class="button">Remove</button>
+                            <div class="inner_name">
+                                <label class="form_label" for="number">Mobile number *
+                                    <input type="number" id="number" name="number"
+                                        value="@if (isset($billDataNew)) {{ $billDataNew->number }} @endif"></label>
+                                <span class="text-danger">
+                                    @error('number')
+                                        {{ $message }}
+                                    @enderror
+                                </span>
+                                <label class="form_label" for="email">Email address
+                                    <input type="email" id="email" name="email"
+                                        value="@if (isset($billDataNew)) {{ $billDataNew->email }} @endif"></label>
+                                <span class="text-danger">
+                                    @error('email')
+                                        {{ $message }}
+                                    @enderror
+                                </span>
                             </div>
-                        </a>
+                            <div class="assesment_button">
+                                <button class="button" onclick="billAddress()">Save</button>
+                                <button id="cancel" class="bg_brown" type="button">Cancel</button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            @endforeach --}}
 
-                    <div id="main_payment">
-                        <div class="main_heading">
-                            <h2>Payment Details</h2>
-                            <p>Select billing address</p>
-                        </div>
-                        <div class="detail_step payment_options">
-                            <div class="left_details">
-                                <input type="radio" id="shipping" name="address_option" value="same">
-                                <label class="payment_select" for="text">Billing Address</label>
-                                <p>save as it to shipping address</p>
+                    {{-- @if (!$billData) --}}
+                    <div id="bill_add" @if($billData) style="display: none" @else style="display: block" @endif>
+                        <div class="order_box mt-5">
+                            <div class="order_img">
+                                <img src="../images/order-icon.png">
                             </div>
-                        </div>
-                        <p class="or_text">or</p>
-                        <div class="Address_button">
-                            <button id="addAddress" type="button">{{ $title }}</button>
-                        </div>
-                        <div id="newAddress">
-                            <form class="address_form" action="{{ $url }}" method="post">
-                                @csrf
-                                <p class="new_address_text">{{ $title }}</p>
-                                <div class="inner_name">
-                                    <label class="form_label" for="fname">First name
-                                        <input type="text" id="fname" name="fname"
-                                            value="@if (isset($billDataNew)) {{ $billDataNew->fname }} @endif"></label>
-                                    <span class="text-danger">
-                                        @error('fname')
-                                            {{ $message }}
-                                        @enderror
-                                    </span>
-                                    <label class="form_label" for="lname">Last name *
-                                        <input type="text" id="lname" name="lname"
-                                            value="@if (isset($billDataNew)) {{ $billDataNew->lname }} @endif"></label>
-                                    <span class="text-danger">
-                                        @error('lname')
-                                            {{ $message }}
-                                        @enderror
-                                    </span>
-                                </div>
-                                <div class="inner_name">
-                                    <label class="form_label" for="number">Mobile number *
-                                        <input type="number" id="number" name="number"
-                                            value="@if (isset($billDataNew)) {{ $billDataNew->number }} @endif"></label>
-                                    <span class="text-danger">
-                                        @error('number')
-                                            {{ $message }}
-                                        @enderror
-                                    </span>
-                                    <label class="form_label" for="email">Email address
-                                        <input type="email" id="email" name="email"
-                                            value="@if (isset($billDataNew)) {{ $billDataNew->email }} @endif"></label>
-                                    <span class="text-danger">
-                                        @error('email')
-                                            {{ $message }}
-                                        @enderror
-                                    </span>
-                                </div>
-                                <div class="assesment_button">
-                                    <button id="" class="button">Save</button>
-                                    <button id="cancel" class="bg_brown" type="button">Cancel</button>
-                                </div>
-                            </form>
-                        </div>
-    
-                        @if ($deliveryData->isEmpty())
-                            <div class="order_box mt-5">
-                                <div class="order_img">
-                                    <img src="../images/order-icon.png">
-                                </div>
-                                <h2 class="order_subHeading">Please enter delivery address first to continue</h2>
-                                <p class="order_text_bottom">Enjoy the shopping journey with us!</p>
-                                <a href="{{ url('/delivery') }}">
-                                    <div class="get_started">
-                                        <button id="" class="bg_brown" type="button">Enter Delivery
-                                            Address</button>
-                                    </div>
-                                </a>
-                            </div>
-                        @else
-                            <div class="seprater_cart"></div>
-                            <div class="main_heading">
-                                <p>Payment method</p>
-                            </div>
-    
-                            <div id="payment1" class="payment_options">
-                                <div id="googlePay" class="options_step">
-                                    <input type="radio" id="shipping" name="fav_language" value="Google Pay">
-                                    <label class="payment_select" for="text">Google Pay</label>
-                                </div>
-                                <div class="pay_with">
-                                    <img src="../images/Apple_Pay.svg">
-                                </div>
-                            </div>
-                            <div class="assesment_button">
-                                <button id="Gpay" class="gpay-btn bg_brown" type="button">Proceed with Google
-                                    Pay</button>
-                            </div>
-                            <div id="payment2" class="payment_options">
-                                <div id="applePay" class="options_step">
-                                    <input type="radio" id="shipping" name="fav_language" value="Apple Pay">
-                                    <label class="payment_select" for="text">Apple Pay</label>
-                                </div>
-                                <div class="pay_with">
-                                    <img src="../images/Apple_Pay.svg">
-                                </div>
-                            </div>
-                            <div class="assesment_button">
-                                <button id="Apple" class="gpay-btn bg_brown" type="button">Proceed with Apple
-                                    Pay</button>
-                            </div>
-                            <div id="payment3" class="payment_options">
-                                <div id="payPal" class="options_step">
-                                    <input type="radio" id="shipping" checked="checked" name="fav_language"
-                                        value="Paypal">
-                                    <label class="payment_select" for="text">Paypal</label>
-                                </div>
-                                <div class="pay_with">
-                                    <img src="../images/PayPal.png">
-                                </div>
-                            </div>
-                            {{-- <a href="{{url('/paymenthandle')}}" class="text-decorate"> --}}
-                            <div class="assesment_button">
-                                <button id="Paypal" class="gpay-btn bg_brown" type="button">Proceed with
-                                    Paypal</button>
-                            </div>
-                            {{-- </a> --}}
-                            <div id="payment4" class="payment_options">
-                                <div id="zipPay" class="options_step">
-                                    <input type="radio" id="shipping" name="fav_language" value="Zip">
-                                    <label class="payment_select" for="text">Zip</label>
-                                    <p>Pay £56.00 in 4 months installments</p>
-                                </div>
-                                <div class="pay_with">
-                                    <img src="../images/Apple_Pay.svg">
-                                </div>
-                            </div>
-    
-                            <div class="assesment_button">
-                                <button id="Zip" class="gpay-btn bg_brown" type="button">Proceed with Zip</button>
-                            </div>
-    
-    
-                            <a href="{{ url('/stripe') }}" class="text-decorate">
-                                <div id="payment5" class="payment_options">
-                                    <div id="creditPay" class="options_step">
-                                        <input type="radio" id="shipping" name="fav_language" value="Credit card">
-                                        <label class="payment_select" for="text">Credit card</label>
-                                    </div>
-                                    <div class="pay_with">
-                                        <img src="../images/Visa-logo.png">
-                                        <img class="master_card" src="../images/Mastercard-logo.png">
-                                        <img class="american_express" src="../images/american-express.png">
-                                    </div>
+                            <h2 class="order_subHeading">Please enter billing address first to continue</h2>
+                            <p class="order_text_bottom">Enjoy the shopping journey with us!</p>
+                            <a href="{{ url('/payment') }}">
+                                <div class="get_started">
+                                    <button id="" class="bg_brown" type="button">Enter Delivery
+                                        Address</button>
                                 </div>
                             </a>
-                        @endif
+                        </div>
                     </div>
-                    </div>
-            @else
-                <div class="order_box" id="payment_box">
+                    {{-- @else --}}
+                        <div id="payment_method" @if($billData) style="display: block" @else style="display: none" @endif>
+                            <div class="seprater_cart"></div>
+                        <div class="main_heading">
+                            <p>Payment method</p>
+                        </div>
+
+                        <div id="payment1" class="payment_options">
+                            <div id="googlePay" class="options_step">
+                                <input type="radio" id="shipping" name="fav_language" value="Google Pay">
+                                <label class="payment_select" for="text">Google Pay</label>
+                            </div>
+                            <div class="pay_with">
+                                <img src="../images/Apple_Pay.svg">
+                            </div>
+                        </div>
+                        <div class="assesment_button">
+                            <button id="Gpay" class="gpay-btn bg_brown" type="button">Proceed with Google
+                                Pay</button>
+                        </div>
+                        <div id="payment2" class="payment_options">
+                            <div id="applePay" class="options_step">
+                                <input type="radio" id="shipping" name="fav_language" value="Apple Pay">
+                                <label class="payment_select" for="text">Apple Pay</label>
+                            </div>
+                            <div class="pay_with">
+                                <img src="../images/Apple_Pay.svg">
+                            </div>
+                        </div>
+                        <div class="assesment_button">
+                            <button id="Apple" class="gpay-btn bg_brown" type="button">Proceed with Apple
+                                Pay</button>
+                        </div>
+                        <div id="payment3" class="payment_options">
+                            <div id="payPal" class="options_step">
+                                <input type="radio" id="shipping" checked="checked" name="fav_language"
+                                    value="Paypal">
+                                <label class="payment_select" for="text">Paypal</label>
+                            </div>
+                            <div class="pay_with">
+                                <img src="../images/PayPal.png">
+                            </div>
+                        </div>
+                        {{-- <a href="{{url('/paymenthandle')}}" class="text-decorate"> --}}
+                        <div class="assesment_button">
+                            <button id="Paypal" class="gpay-btn bg_brown" type="button">Proceed with
+                                Paypal</button>
+                        </div>
+                        {{-- </a> --}}
+                        <div id="payment4" class="payment_options">
+                            <div id="zipPay" class="options_step">
+                                <input type="radio" id="shipping" name="fav_language" value="Zip">
+                                <label class="payment_select" for="text">Zip</label>
+                                <p>Pay £56.00 in 4 months installments</p>
+                            </div>
+                            <div class="pay_with">
+                                <img src="../images/Apple_Pay.svg">
+                            </div>
+                        </div>
+
+                        <div class="assesment_button">
+                            <button id="Zip" class="gpay-btn bg_brown" type="button">Proceed with
+                                Zip</button>
+                        </div>
+
+
+                        <a href="{{ url('/stripe') }}" class="text-decorate">
+                            <div id="payment5" class="payment_options">
+                                <div id="creditPay" class="options_step">
+                                    <input type="radio" id="shipping" name="fav_language" value="Credit card">
+                                    <label class="payment_select" for="text">Credit card</label>
+                                </div>
+                                <div class="pay_with">
+                                    <img src="../images/Visa-logo.png">
+                                    <img class="master_card" src="../images/Mastercard-logo.png">
+                                    <img class="american_express" src="../images/american-express.png">
+                                </div>
+                            </div>
+                        </a>
+                        </div>
+                    {{-- @endif --}}
+                </div>
+        
+        </div>
+
+            <div id="payment_box"
+                @if ($totalAmount < 1) style="display: block" @else style="display: none" @endif>
+                <div class="order_box">
                     <div class="order_img">
                         <img src="../images/order-icon.png">
                     </div>
@@ -243,12 +240,15 @@
                         </div>
                     </a>
                 </div>
-            @endif
+            </div>
+
+            <div id="delivery_box"
+            @if ($totalAmount < 1) style="display: none" @else style="display: block" @endif>
             <div class="payment_top">
                 <div class="payment_right">
                     <p class="order">Your order</p>
-                    @foreach ($item as $data)
-                        <div class="hormone_test" id="delete{{ $data->id }}">
+                    @foreach ($cart as $data)
+                        <div class="hormone_test" id="delete{{ $data->productId }}">
                             <div class="step_left">
                                 <img src="{{ $data->image }}">
                             </div>
@@ -262,7 +262,7 @@
                             </div>
 
                             <div class="step_right">
-                                <a onclick="removeItem('{{ $data->id }}')">
+                                <a onclick="removeItem('{{ $data->productId }}')">
                                     <img class="cross_white" src="../images/cross_white.svg">
                                 </a>
                             </div>
@@ -272,7 +272,7 @@
                     <div class="discount_code">
                         <div class="order_receipt">
                             <p class="code_text">Discount code</p>
-                            @if (Session::has('success'))
+                            {{-- @if (Session::has('success'))
                                 <div class="my_alert">
                                     <p>{{ Session::get('success') }}</p>
                                 </div>
@@ -281,39 +281,38 @@
                                 <div class="my_error_alert">
                                     <p>{{ Session::get('error') }}</p>
                                 </div>
-                            @endif
+                            @endif --}}
                         </div>
-                        <form id="form">    
-                            <div class="order_receipt">
-                                <div class="code_input">
-                                    <input type="text" id="quantity" name="code"
-                                        value="{{ $inputData }}">
+                        {{-- <form action="{{$myUrl}}" method="post">  
+                        @csrf --}}
+                        <div class="order_receipt">
+                            <div class="code_input">
+                                <input type="text" id="discount" name="code"
+                                    value="{{ $cart[0]->voucher }}">
 
-                                    <div class="d-flex">
-                                        <p>HERTILITYHEALTH</p>
-                                        <p class="ms-3">TEJENDER</p>
-                                    </div>
-                                </div>
-                                <div class="code_button" onclick="applyCoupon()">
-                                    <input class="submit_button" id="btn_value" value="{{ $btnValue }}" type="submit"
-                                        id="coupon-button">
-                                </div>
                             </div>
-                        </form>
+                            <div class="code_button">
+                                <input class="submit_button" name="action" id="btn_value" type="submit"
+                                    @if (!$cart[0]->voucher) value="Apply" @else value="Remove" @endif
+                                    onclick="applyCoupon()">
+                            </div>
+                        </div>
+                        {{-- </form> --}}
                     </div>
 
                     <div class="receipt">
                         <div class="order_receipt">
                             <p>Item</p>
-                            <p id="paymentcartCount">{{$itemCount}}</p>
+                            <p id="paymentcartCount">{{ $itemCount }}</p>
                         </div>
-                        @if ($inputData)
+                        <div id="my_voucher"   @if ($cart[0]->voucher) style="display:block" @else style="display:none" @endif>
                             <div class="order_receipt">
                                 <p style="color: #fa4446;">Discount</p>
-                                <p id="my_discount" style="color: #fa4446;">-£{{ $totalDiscount }}</p>
+                                <p id="my_discount" style="color: #fa4446;">-£{{ $couponDiscount }}</p>
                             </div>
-                        @else
-                        @endif
+                        </div>
+                        {{-- @else
+                    @endif --}}
                         <div class="order_receipt">
                             <p>Shipping Cart</p>
                             <p>Free</p>
@@ -323,10 +322,9 @@
                             <span>
                                 <p style="font-size: 45px; font-weight: 500; text-align: right;" id="amount">
 
-                                    £{{ $totalValue }}.00
+                                    £{{ $totalAmount }}.00
 
                                 </p>
-                                <p style="font-size: font-size: 17px;"></p>
                             </span>
                         </div>
                     </div>
@@ -337,8 +335,12 @@
                 </div>
             </div>
         </div>
-    </div>
+            </div>
+        </div>
 </section>
+
+<input type="hidden" id="myUrl" value="{{$myUrl}}">
+
 </body>
 
 </html>
@@ -419,12 +421,93 @@
             });
     });
 
-    function removeItem(id){
+    function removeItem(id) {
         var url = `{{ url('/remove/') }}/${id}`;
-      
-       var csrfToken = '{{ csrf_token() }}';
-       var data = {
-            id : id,
+
+        var csrfToken = '{{ csrf_token() }}';
+        var data = {
+            id: id,
+            _token: csrfToken
+        };
+        $.ajax({
+            type: 'GET',
+            url: url,
+            data: data,
+            dataType: 'json',
+            success: function(result) {
+
+                if (result.count < 1) {
+                    $('.payment_details').css('flex', 'auto');
+                    $('#cartCount').removeClass('cart_style');
+                    $('#cartCount').empty();
+                    $('#paymentcartCount').text(result.count);
+                    $('#payment_box').show();
+                    $('#delivery_box').hide();
+                    $('#discount').val('');
+                    $('#payment_address').hide();
+                    $('#payment_unset').show();
+                    $('#payment_flex').css('display', 'unset');
+                } else {
+                    $('#cartCount').text(result.count);
+                    $('#paymentcartCount').text(result.count);
+                    $('#payment_box').hide();
+                    $('#delivery_box').show();
+                    $('#payment_address').show();
+                    $('payment_unset').hide();
+                    $('#payment_flex').css('display', 'flex');
+
+                }
+
+                if (result.total < 100) {
+                    $('#my_voucher').hide();
+                    $('#btn_value').val('Apply');
+                    $('#discount').val('');
+                }
+
+                $('#delete' + id).remove();
+                $('#amount').text('£' + result.total + '.00');
+            }
+        });
+    }
+
+    function applyCoupon() {
+        var csrfToken = '{{ csrf_token() }}';
+        var url = $('#myUrl').val();
+        var code = $('#discount').val();
+        var action = $('#btn_value').val();
+        var data = {
+            _token: csrfToken,
+            "code": code,
+            'action': action,
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: data,
+            success: function(result) {
+                // console.log(result.total);
+                $('#btn_value').val(result.btnValue);
+                $('#amount').text('£' + result.total + '.00');
+                $('#discount').val(result.inputData);
+                $('#form').text(result.myUrl);
+                $('#my_discount').text('-£' + result.discount);
+                if (result.discount > 1) {
+                    $('#my_voucher').show();
+                } else {
+                    $('#my_voucher').hide();
+                }
+                $('#myUrl').val(result.myUrl);
+            }
+        });
+    }
+
+    function deleteItem(id) {
+        var url = `{{ url('/deletebill/') }}/${id}`;
+
+        var csrfToken = '{{ csrf_token() }}';
+        var data = {
+            id: id,
             _token: csrfToken
         };
         $.ajax({
@@ -432,44 +515,40 @@
             url: url,
             data: data,
             success: function(result) {
-				if (result.count < 1) {
-					$('#cartCount').removeClass('cart_style');
-					$('#cartCount').empty();
-					$('#paymentcartCount').text(result.count);
-                    $('#payment_box').show();
-                    $('#main_payment').hide();
-				}else{
-					$('#cartCount').text(result.count);
-				    $('#paymentcartCount').text(result.count);
-                    $('#payment_box').hide();
-                    $('#main_payment').show();
-				}
-                $('#delete' + id).remove();
-				$('#amount').text('£' + result.total + '.00');
+            
+                // if(result.bill){
+                //     $('#payment_method').show();
+                //     $('#bill_add').hide();
+                // }else{
+                //     $('#payment_method').hide();
+                //     $('#bill_add').show();
+                // }
+
+                $('#delivery_id' + id).remove();
             }
         });
     }
 
-    function applyCoupon() {
+
+    function billAddress(){  
         var csrfToken = '{{ csrf_token() }}';
-        var url = '{{$myUrl}}';
-      
+        var url = "{{url('/billadd')}}";
         var data = {
-            _token : csrfToken
-        };
-        
+            '_token' : csrfToken,
+        }
         $.ajax({
             type : 'POST',
             url : url,
             data : data,
-            success: function(result){
-                console.log(result.totalDiscount);
-                $('#btn_value').text(result.btnValue);
-                $('#amount').text(result.totalValue);
-                $('#quantity').text(result.inputData);
-                $('#form').text(result.myUrl);
-                $('#my_discount').text(result.totalDiscount);
+            dataType : 'json',
+            success:function(result){
+                console.log(result.bill)
+                $('#fname').val(result.bill.fname);
+                $('#lname').val(result.bill.lname);
+                $('#number').val(result.bill.number);
+                $('#email').val(result.bill.email);
             }
-        });
+        })
     }
+
 </script>

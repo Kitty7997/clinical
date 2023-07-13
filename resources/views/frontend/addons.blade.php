@@ -190,16 +190,6 @@
                 console.log(item);
                 $('#cartCount').addClass('cart_style');
                 $('#cartCount').text(result.count);
-
-				$("body").on("click", "#show_data", function() {
-                $('#image').val(item.image);
-                $('#head').val(item.head);
-                $('#price').val(item.price);
-                $('#quantity').val(item.quantity);
-                });
-                
-
-               
             }
         });
     }

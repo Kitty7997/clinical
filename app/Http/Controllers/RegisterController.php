@@ -4,13 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Session;
+use App\Models\Cart;
 use App\Models\User;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
-use Hash;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 
 
@@ -20,21 +18,17 @@ class RegisterController extends Controller
     
     public function accountPage(){
         $userId = Auth::user();
-        $item = null;
-        $itemCount = 0;
-        if($userId){
-        $item = DB::table('cart')
-        ->select('cart.*','clinical.image','clinical.head','clinical.price')
-        ->where('user_id', $userId->id)
-        ->join('clinical', 'clinical.id', '=', 'cart.product_id')
-        ->get();
-        // dd($item);
-    
+
+        $item = (new Cart())->cartData();
+       
         $itemCount = $item->where('user_id',$userId->id)->count();
-    }
+    
         $data = compact('item','itemCount');
+
         return view('frontend/account')->with($data);
     }
+
+
 
     public function postLogin(Request $request)
     {
@@ -55,25 +49,22 @@ class RegisterController extends Controller
     $user->password = Hash::make($request->input('password'));
     $user->confirmpassword = Hash::make($request->input('confirmpassword'));
     $user->save();
-    // Session::flash('success', 'Registration successful! Please log in.');
+
     return redirect('login');
     }
 
+
+
+
     public function loginPage(){
         $userId = Auth::user();
-        $item = null;
-        $itemCount = 0;
-        if($userId){
-        $item = DB::table('cart')
-        ->select('cart.*','clinical.image','clinical.head','clinical.price')
-        ->where('user_id', $userId->id)
-        ->join('clinical', 'clinical.id', '=', 'cart.product_id')
-        ->get();
-        // dd($item);
+       
+        $item = (new Cart())->cartData();
     
-      $itemCount = $item->where('user_id',$userId->id)->count();
-    }
-        $data = compact('item','itemCount');
+        // $itemCount = $item->where('user_id',$userId->id)->count();
+    
+        $data = compact('item');
+
         return view('frontend/login')->with($data);
     }
 
@@ -84,8 +75,6 @@ class RegisterController extends Controller
         ]);
 
         $userData = $request->only('email', 'password');
-        //dd($userData);
-        
         
         if(Auth::attempt($userData)){
             $request->session()->put('userData', $userData);
@@ -97,24 +86,19 @@ class RegisterController extends Controller
     
     public function forgotPassword(){
         $userId = Auth::user();
-        $item = null;
-        $itemCount = 0;
-        if($userId){
-          $item = DB::table('cart')
-          ->select('cart.*','clinical.image','clinical.head','clinical.price')
-          ->where('user_id', $userId->id)
-          ->join('clinical', 'clinical.id', '=', 'cart.product_id')
-          ->get();
-          // dd($item);
+       
+          $item = (new Cart())->cartData();
         
           $itemCount = $item->where('user_id',$userId->id)->count();
-        }
         
-
         $data = compact('item','itemCount');
+
         return view('frontend/forgot')->with($data);
     }
 
+
+
+    
    public function postforgot(Request $request){
     $request->validate(['email' => 'required|email']);
  

@@ -49,7 +49,6 @@
             url: url,
             data: data,
             success: function(result) {
-                console.log(result.count)
                 $('#cartCount').addClass('cart_style');
                 $('#cartCount').text(result.count);
             }

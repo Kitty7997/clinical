@@ -9,8 +9,8 @@
         <div class="top_heading">
             <h1>Yours Orders</h1>
         </div>
-       
-            <div class="order_box" id="box_order">
+            
+            <div class="order_box" id="box_order" @if($orderCount < 1) style="display: block" @else style="display: none" @endif>
                 <div class="order_img">
                     <img src="../images/order-icon.png">
                 </div>
@@ -24,7 +24,8 @@
                 </a>
             </div>
        
-            <table style="width:100%" id="my_table">
+            <div id="my_table" @if($orderCount < 1) style="display: none" @else style="display: block" @endif>
+            <table style="width:100%">
                 <tr>
                     <th>Image</th>
                     <th>Heading</th>
@@ -59,6 +60,7 @@
                 @endforeach
 
             </table>
+        </div>
         
     </div>
 </section>

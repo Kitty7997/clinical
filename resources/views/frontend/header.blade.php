@@ -78,7 +78,7 @@
                         </svg>
                         @if (Session::has('userData'))
                         
-                            <span @if ($itemCount > 0) class="cart_style" @endif id="cartCount">
+                            <span id="cartCount" @if ($itemCount > 0) class="cart_style" @endif>
                                 @if ($itemCount > 0)
                                     {{ $itemCount }}
                                 @endif
@@ -115,7 +115,7 @@
                         <p>Your test</p>
                     </a>
 
-                    <a href="{{ url('/addons') }}" class="test_step">
+                    {{-- <a href="{{ url('/addons') }}" class="test_step">
                         <span class="test_tube_hold"><svg height="25" width="25" version="1.1"
                                 id="Icons" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -163,7 +163,7 @@
                             </svg>
                         </span>
                         <p>Add-ons</p>
-                    </a>
+                    </a> --}}
 
                     <a href="{{ url('/cart') }}" class="test_step">
                         <span class="test_tube_hold"><svg width="24" height="26" viewBox="0 0 24 26"

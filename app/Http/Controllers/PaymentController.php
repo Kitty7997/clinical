@@ -4,91 +4,71 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Delivery;
-use Illuminate\Support\Facades\DB;
 use App\Models\Bill;
-use App\Models\Price;
 use App\Models\Cart;
 use App\Models\Coupon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 
 class PaymentController extends Controller
 {
-    public function paymentController(Request $request){
+    public function paymentController(Request $request)
+    {
         $userId = Auth::user()->id;
+        $cart = (new Cart())->cartData();
+        $deliveryData = Delivery::where('user_id', $userId)->orderBy('created_at','desc')->first();
+
+        if (!$deliveryData) {
+            return redirect('/delivery');
+        }
+
         $url = url('/billadd');
-        $deliveryData = Delivery::where('user_id', $userId)->get();
-        $request->session()->put('deliverData', $deliveryData);
-        $billData = Bill::where('user_id', $userId)->orderBy('created_at','desc')->first();
+
+
+        $billData = Bill::where('user_id', $userId)->orderBy('created_at', 'desc')->first();
+
         $title = 'Add New Address';
 
-        $coupon = Coupon::first()->code;
+        $cart = (new Cart())->cartData();
 
-        $cart = Cart::where('product_id', $request->input('product_id'))
-        ->where('user_id', $userId)
-        ->first();
-        
-        // dd($cartCoupon);
-       
-        $item = DB::table('cart')
-        ->select('cart.*','clinical.image','clinical.head','clinical.price')
-        ->where('user_id', $userId)
-        ->join('clinical', 'clinical.id', '=', 'cart.product_id')
-        ->get();
-        // dd($item);
-        $cartDiscount = $item->pluck('discount')->first();
-        $cartPercentage = $item->pluck('percentage')->first();
-        
-        // dd($cartPercentage);
-      
-    
-        $itemCount = $item->where('user_id',$userId)->count();
+        $itemCount = $cart->where('user_id', $userId)->count();
 
-        // $NewtotalPrice = 0;
-        foreach($item as $key=>$value){
-            $item[$key]->totalPrice=$value->price * $value->quantity;
-            // $NewtotalPrice = $NewtotalPrice + $item[$key]->totalPrice;
-        }
+        $overallTotal = $cart->sum('totalPrice');
 
-        $newTotal = DB::table('cart')
-        ->select('cart.*','clinical.image','clinical.head','clinical.price')
-        ->where('user_id', $userId)
-        ->join('clinical', 'clinical.id', '=', 'cart.product_id')
-        ->sum(DB::raw('clinical.price * cart.quantity'));
+        $couponCode = $cart[0]->voucher;
 
-        $finalTotal = $newTotal - $cartDiscount;
-        $finalTotal2 = $newTotal-$newTotal*$cartPercentage/100;
+        if ($couponCode) {
+            $coupon = (new Coupon())->getCoupon($couponCode);
 
-        $totalValue = $cartDiscount ? $finalTotal : $finalTotal2;
+            $totalAmount = $coupon['totalValue'];
 
-        $codeValue = $request->session()->get('code');
+            $couponDiscount = $coupon['discount'];
 
-        $percentValue = $request->session()->get('percent');
-
-        $inputData = $codeValue ? $codeValue : $percentValue;
-
-        $totalDiscount = $cartDiscount ? $cartDiscount : $cartPercentage.'%';
-       
-        if($totalDiscount > 1){
             $btnValue = 'Remove';
             $myUrl = url('/forget');
-        }else{
+        } else {
+            $totalAmount = $overallTotal;
+            $couponDiscount = 0;
+
             $btnValue = 'Apply';
-            $myUrl = url('/add_to_cart_again');
+            $myUrl = url('/apply_coupon');
         }
 
-        $data = compact('item','deliveryData','newTotal','billData','url','title','itemCount','cart','codeValue','myUrl','btnValue','cartDiscount','percentValue','cartPercentage','inputData','totalDiscount','finalTotal','finalTotal2','totalValue');
-            return view('frontend/payment')->with($data);
-        }
+        $data = compact('cart','deliveryData','totalAmount','url','title','myUrl','couponDiscount','itemCount','billData');
 
-    public function billAdd(Request $request){
-        $request->validate([
-            'fname' => 'required',
-            'lname' => 'required',
-            'number' => 'required|numeric',
-            'email' => 'required|email'
-        ]);
-        $userId = Auth::user()->id;
+        return view('frontend/payment')->with($data);
+    }
+
+    public function billAdd(Request $request)
+    {
+    //   $request->validate([
+    //     'fname' => 'required',
+    //     'lname' => 'required',
+    //     'number' => 'required|numeric',
+    //     'email' => 'required|email'
+    //   ]);
+    
+      $userId = Auth::user()->id;
+      
         $bill = new Bill;
         $bill->user_id = $userId;
         $bill->fname = $request->input('fname');
@@ -96,55 +76,37 @@ class PaymentController extends Controller
         $bill->number = $request->input('number');
         $bill->email = $request->input('email');
         $bill->save();
-        // dd($bill);
-        return redirect()->back();
-    }
-
-    public function paymentEditController($id, Request $request){
-        $userId = Auth::user()->id;
-        $deliveryData = Delivery::where('user_id',$userId)->get();
-        // $coupon = Coupon::where('user_id', $userId)->get();
-        $billData = Bill::where('user_id', $userId)->orderBy('created_at','desc')->first();
-        $title = 'Update account here';
-        $billDataNew = Bill::find($id);
-        $cart = Cart::where('product_id', $request->input('product_id'))
-        ->where('user_id', $userId)
-        ->first();
-        // dd($billData);
-        $url = url('/editbilladd'.'/'.$id);
-       
-        $item = DB::table('cart')
-        ->select('cart.*','clinical.image','clinical.head','clinical.price')
-        ->where('user_id', $userId)
-        ->join('clinical', 'clinical.id', '=', 'cart.product_id')
-        ->get();
-        // dd($item);
-        $cartDiscount = $item->pluck('discount')->first();
     
-        $itemCount = $item->where('user_id',$userId)->count();
-       
-        // $NewtotalPrice = 0;
-        foreach($item as $key=>$value){
-            $item[$key]->totalPrice=$value->price * $value->quantity;
-            // $NewtotalPrice = $NewtotalPrice + $item[$key]->totalPrice;
-        }
+    
+      return response()->json(['bill' => $bill]);
+    }
+    
 
-        $newTotal = DB::table('cart')
-        ->select('cart.*','clinical.image','clinical.head','clinical.price')
-        ->where('user_id', $userId)
-        ->join('clinical', 'clinical.id', '=', 'cart.product_id')
-        ->sum(DB::raw('clinical.price * cart.quantity'));
+    public function paymentEditController($id, Request $request)
+    {
+        $userId = Auth::user()->id;
+        $deliveryData = Delivery::where('user_id', $userId)->get();
 
-        $finalTotal = $newTotal - $cartDiscount;
+        $title = 'Update account here';
 
+        $billDataNew = Bill::find($id);
 
-        $data = compact('item','deliveryData','newTotal','billDataNew','url','billData','title','itemCount','price','finalTotal');
+        $url = url('/editbilladd' . '/' . $id);
+
+        $cart = (new Cart())->cartData();
+
+        $itemCount = $cart->where('user_id', $userId)->count();
+
+        $newTotal = $cart->sum('totalPrice');
+
+        $data = compact('cart', 'deliveryData', 'newTotal', 'billDataNew', 'url', 'title', 'itemCount');
         return view('frontend.payment', $data);
     }
 
-    public function editbill($id, Request $request){
+    public function editbill($id, Request $request)
+    {
         $billValue = Bill::find($id);
-        // dd($billValue);
+
         $billValue->fname = $request->input('fname');
         $billValue->lname = $request->input('lname');
         $billValue->number = $request->input('number');
@@ -153,10 +115,13 @@ class PaymentController extends Controller
         return redirect()->back();
     }
 
-    public function deleteBill($id){
+    public function deleteBill($id)
+    {
+        $userId = Auth::user()->id;
+        $bill = Bill::where('user_id', $userId)->orderBy('created_at', 'desc')->first();
         $delete = Bill::destroy($id);
-        return redirect('/payment');
+        return response()->json([
+            'bill' => $bill
+        ]);
     }
-
-    
 }
